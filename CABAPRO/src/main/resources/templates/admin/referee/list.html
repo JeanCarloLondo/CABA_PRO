@@ -1,0 +1,26 @@
+<!-- templates/admin/referees/list.html -->
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Referees</title>
+</head>
+<body>
+<h1>Referees</h1>
+<table border="1">
+    <thead>
+        <tr>
+            <th>ID</th>
+            <th>Ranking</th>
+        </tr>
+    </thead>
+    <tbody>
+        <tr th:each="referee : ${referees}">
+            <td th:text="${referee.id}"></td>
+            <td th:text="${referee.ranking.name}"></td>
+            <td th:text="${referee.email}"></td>
+        </tr>
+    </tbody>
+</table>
+</body>
+</html>

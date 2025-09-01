@@ -21,9 +21,11 @@ public class Referee {
     // TODO: relation with User (to be added later)
     // TODO: relation with Speciality (to be added later)
 
-    @ManyToOne(fetch = FetchType.LAZY)
+    @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "ranking_id", nullable = false)
     private Ranking ranking;
+
+    private String email;
 
     protected Referee() {
         // Default constructor required by JPA
@@ -45,10 +47,20 @@ public class Referee {
         this.ranking = ranking;
     }
 
+    public void setEmail(String email) {
+        this.email = email;
+    }
+
+    public String getEmail() {
+        return email;
+    }
+
     @Override
     public boolean equals(Object o) {
-        if (this == o) return true;
-        if (!(o instanceof Referee)) return false;
+        if (this == o)
+            return true;
+        if (!(o instanceof Referee))
+            return false;
         Referee referee = (Referee) o;
         return Objects.equals(id, referee.id);
     }

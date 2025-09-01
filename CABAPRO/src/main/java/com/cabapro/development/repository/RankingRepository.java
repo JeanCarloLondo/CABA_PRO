@@ -1,7 +1,7 @@
 /**
  * Repository interface for managing Ranking entities.
  *
- * Author: Team #5
+ * Author: Jean Londoño
  * Date: 2025-08-31
  * Role: Data access layer - Ranking
  */

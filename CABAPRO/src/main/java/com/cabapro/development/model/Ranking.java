@@ -1,7 +1,7 @@
 /**
  * Represents a referee ranking level within the arbitration system.
  *
- * Author: Team #5
+ * Author: Jean Londoño
  * Date: 2025-08-31
  * Role: Domain entity - ranking
  */
@@ -23,15 +23,19 @@ public class Ranking {
     private String name; // Example: FIBA, National, Local
 
     @Column(nullable = false)
-    private double baseRate; // Base fee for referees in this ranking
+    private double fee; // Payment fee for this ranking
+
+    @Column(length = 255)
+    private String description;
 
     protected Ranking() {
         // Default constructor required by JPA
     }
 
-    public Ranking(String name, double baseRate) {
+    public Ranking(String name, double fee, String description) {
         this.name = name;
-        this.baseRate = baseRate;
+        this.fee = fee;
+        this.description = description;
     }
 
     public Long getId() {
@@ -46,26 +50,36 @@ public class Ranking {
         this.name = name;
     }
 
-    public double getBaseRate() {
-        return baseRate;
+    public double getFee() {
+        return fee;
     }
 
-    public void setBaseRate(double baseRate) {
-        this.baseRate = baseRate;
+    public void setFee(double fee) {
+        this.fee = fee;
+    }
+
+    public String getDescription() {
+        return description;
+    }
+
+    public void setDescription(String description) {
+        this.description = description;
     }
 
     @Override
     public boolean equals(Object o) {
-        if (this == o) return true;
-        if (!(o instanceof Ranking)) return false;
-        Ranking that = (Ranking) o;
-        return Double.compare(that.baseRate, baseRate) == 0
-                && Objects.equals(id, that.id)
-                && Objects.equals(name, that.name);
+        if (this == o)
+            return true;
+        if (!(o instanceof Ranking))
+            return false;
+        Ranking ranking = (Ranking) o;
+        return Double.compare(ranking.fee, fee) == 0
+                && Objects.equals(id, ranking.id)
+                && Objects.equals(name, ranking.name);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(id, name, baseRate);
+        return Objects.hash(id, name, fee);
     }
 }

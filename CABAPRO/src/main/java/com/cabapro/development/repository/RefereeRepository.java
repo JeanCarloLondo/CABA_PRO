@@ -23,4 +23,5 @@ public interface RefereeRepository extends JpaRepository<Referee, Long> {
      * @return an Optional containing the Referee if found, otherwise empty
      */
     Optional<Referee> findByEmail(String email);
+    boolean existsByEmail(String email);
 }

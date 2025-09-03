@@ -15,6 +15,6 @@ INSERT INTO ranking (id, name, fee, description)
 VALUES (3, 'Local', 50.0, 'Local league referees');
 
 -- Insert sample referees (each linked to a ranking)
-INSERT INTO referee (id, email, ranking_id) VALUES (1, 'fiba.ref@cabapro.com', 1);
-INSERT INTO referee (id, email, ranking_id) VALUES (2, 'nat.ref@cabapro.com', 2);
-INSERT INTO referee (id, email, ranking_id) VALUES (3, 'loc.ref@cabapro.com', 3);
+INSERT INTO referee (id, email, ranking_id, phone_number) VALUES (1, 'fiba.ref@cabapro.com', 1, '123-456-7890');
+INSERT INTO referee (id, email, ranking_id, phone_number) VALUES (2, 'nat.ref@cabapro.com', 2, '234-567-8901');
+INSERT INTO referee (id, email, ranking_id, phone_number) VALUES (3, 'loc.ref@cabapro.com', 3, '345-678-9012');

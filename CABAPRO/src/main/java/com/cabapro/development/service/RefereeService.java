@@ -7,6 +7,7 @@
  */
 package com.cabapro.development.service;
 
+import com.cabapro.development.model.Ranking;
 import com.cabapro.development.model.Referee;
 import com.cabapro.development.repository.RefereeRepository;
 import org.springframework.stereotype.Service;
@@ -49,8 +50,37 @@ public class RefereeService {
      * @param referee referee entity
      * @return saved referee
      */
+
     public Referee save(Referee referee) {
+        if (referee.getId() != null) {
+            throw new IllegalArgumentException("New referee should not have an ID");
+        }
+
+        if (refereeRepository.existsByEmail(referee.getEmail())) {
+            throw new IllegalArgumentException("Email already exists: " + referee.getEmail());
+        }
+
+        Ranking ranking = referee.getRanking();
+        if (ranking == null || ranking.getId() == null) {
+            throw new IllegalArgumentException("Ranking must be selected");
+        }
+
         return refereeRepository.save(referee);
+    }
+
+    public Referee update(Long id, Referee updated) {
+        Referee existing = findById(id);
+
+        if (!existing.getEmail().equals(updated.getEmail()) &&
+                refereeRepository.existsByEmail(updated.getEmail())) {
+            throw new IllegalArgumentException("Email already exists: " + updated.getEmail());
+        }
+
+        existing.setEmail(updated.getEmail());
+        existing.setPhoneNumber(updated.getPhoneNumber());
+        existing.setRanking(updated.getRanking());
+
+        return refereeRepository.save(existing);
     }
 
     /**

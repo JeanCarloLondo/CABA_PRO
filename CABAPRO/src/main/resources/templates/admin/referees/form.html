@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+
+<head>
+    <meta charset="UTF-8">
+    <title>Referee Form</title>
+</head>
+
+<body>
+    <h1 th:text="${referee.id == null} ? 'Add Referee' : 'Edit Referee'"></h1>
+
+    <div th:if="${error}" style="color: red; margin-bottom: 15px;">
+        <span th:text="${error}"></span>
+    </div>
+
+    <form th:action="${referee.id == null} ? @{/admin/referees} : @{/admin/referees/{id}(id=${referee.id})}"
+          method="post">
+
+        <input type="hidden" th:if="${referee.id != null}" name="id" th:value="${referee.id}" />
+
+        <label>Email:</label>
+        <input type="email" name="email" th:value="${referee.email}" required />
+        <br />
+
+        <label>Phone Number:</label>
+        <input type="text" name="phoneNumber" th:value="${referee.phoneNumber}" required />
+        <br />
+
+        <label>Ranking:</label>
+        <select name="rankingId" required>
+            <option value="">-- Select Ranking --</option>
+            <option th:each="r : ${rankings}" 
+                    th:value="${r.id}" 
+                    th:text="${r.name}"
+                    th:selected="${referee.ranking != null and referee.ranking.id == r.id}">
+            </option>
+        </select>
+        <br />
+
+        <button type="submit" th:text="${referee.id == null} ? 'Save' : 'Update'"></button>
+    </form>
+
+    <a th:href="@{/admin/referees}">Back to list</a>
+</body>
+
+</html>

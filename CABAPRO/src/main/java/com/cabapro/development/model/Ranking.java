@@ -28,7 +28,7 @@ public class Ranking {
     @Column(length = 255)
     private String description;
 
-    protected Ranking() {
+    public Ranking() {
         // Default constructor required by JPA
     }
 

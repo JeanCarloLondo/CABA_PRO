@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+
+<head>
+    <meta charset="UTF-8">
+    <title>Referees</title>
+</head>
+
+<body>
+    <h1>Referees</h1>
+    <a th:href="@{/admin/referees/new}">Add Referee</a>
+    <table border="1">
+        <thead>
+            <tr>
+                <th>ID</th>
+                <th>Email</th>
+                <th>Phone Number</th>
+                <th>Ranking</th>
+                <th>Actions</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr th:each="referee : ${referees}">
+                <td th:text="${referee.id}"></td>
+                <td th:text="${referee.email}"></td>
+                <td th:text="${referee.phoneNumber}"></td>
+                <td th:text="${referee.ranking.name}"></td>
+                <td>
+                    <a th:href="@{/admin/referees/{id}/edit(id=${referee.id})}">Edit</a>
+                    <form th:action="@{/admin/referees/{id}/delete(id=${referee.id})}" method="post" style="display:inline;">
+                        <button type="submit">Delete</button>
+                    </form>
+                </td>
+            </tr>
+        </tbody>
+    </table>
+</body>
+
+</html>

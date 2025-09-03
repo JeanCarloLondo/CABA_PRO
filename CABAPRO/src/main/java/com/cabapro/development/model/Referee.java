@@ -9,6 +9,8 @@ package com.cabapro.development.model;
 
 import jakarta.persistence.*;
 import java.util.Objects;
+import jakarta.validation.constraints.Email;
+import jakarta.validation.constraints.NotBlank;
 
 @Entity
 @Table(name = "referee")
@@ -25,18 +27,31 @@ public class Referee {
     @JoinColumn(name = "ranking_id", nullable = false)
     private Ranking ranking;
 
+    @NotBlank
+    @Email
+    @Column(nullable = false, unique = true)
     private String email;
 
-    protected Referee() {
+    public Referee() {
         // Default constructor required by JPA
     }
 
-    public Referee(Ranking ranking) {
+    @NotBlank(message = "Phone number is mandatory")
+    @Column(name = "phone_number", nullable = false, length = 15)
+    private String phoneNumber;
+
+    public Referee(Ranking ranking, String email, String phoneNumber) {
         this.ranking = ranking;
+        this.email = email;
+        this.phoneNumber = phoneNumber;
     }
 
     public Long getId() {
         return id;
+    }
+
+    public void setId(Long id) {
+        this.id = id;
     }
 
     public Ranking getRanking() {
@@ -53,6 +68,14 @@ public class Referee {
 
     public String getEmail() {
         return email;
+    }
+
+    public String getPhoneNumber() {
+        return phoneNumber;
+    }
+
+    public void setPhoneNumber(String phoneNumber) {
+        this.phoneNumber = phoneNumber;
     }
 
     @Override

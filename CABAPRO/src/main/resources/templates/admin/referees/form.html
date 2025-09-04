@@ -14,7 +14,7 @@
     </div>
 
     <form th:action="${referee.id == null} ? @{/admin/referees} : @{/admin/referees/{id}(id=${referee.id})}"
-          method="post">
+        method="post">
 
         <input type="hidden" th:if="${referee.id != null}" name="id" th:value="${referee.id}" />
 

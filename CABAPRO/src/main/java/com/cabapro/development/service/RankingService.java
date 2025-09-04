@@ -59,9 +59,17 @@ public class RankingService {
      * @param id ranking ID
      */
     public void deleteById(Long id) {
+        Ranking ranking = findById(id);
+
         if (!rankingRepository.existsById(id)) {
             throw new IllegalArgumentException("Ranking not found with id: " + id);
         }
+
+        // Prevent deletion if referees exist
+        if (!ranking.getReferees().isEmpty()) {
+            throw new IllegalArgumentException("Cannot delete ranking associated with referees");
+        }
+
         rankingRepository.deleteById(id);
     }
 }

@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+
+<head>
+    <meta charset="UTF-8">
+    <title>Rankings</title>
+</head>
+
+<body>
+    <h1>Rankings</h1>
+
+    <div th:if="${error}" style="color:red;">
+        <p th:text="${error}"></p>
+    </div>
+
+    <a th:href="@{/admin/rankings/new}">Add Ranking</a>
+    <table border="1">
+        <tr>
+            <th>Name</th>
+            <th>Description</th>
+            <th>Actions</th>
+        </tr>
+        <tr th:each="ranking : ${rankings}">
+            <td th:text="${ranking.name}"></td>
+            <td th:text="${ranking.description}"></td>
+            <td>
+                <a th:href="@{/admin/rankings/{id}/edit(id=${ranking.id})}">Edit</a>
+                <form th:action="@{/admin/rankings/{id}/delete(id=${ranking.id})}" method="post"
+                    style="display:inline;">
+                    <button type="submit">Delete</button>
+                </form>
+            </td>
+        </tr>
+    </table>
+
+    <a th:href="@{/admin}">Back</a>
+</body>
+
+</html>

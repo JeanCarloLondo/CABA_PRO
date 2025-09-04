@@ -9,12 +9,11 @@ package com.cabapro.development.controller;
 
 import com.cabapro.development.model.Ranking;
 import com.cabapro.development.service.RankingService;
-import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.ui.Model;
+import org.springframework.stereotype.Controller;
 
-import java.util.List;
-
-@RestController
+@Controller
 @RequestMapping("/admin/rankings")
 public class RankingController {
 
@@ -25,32 +24,45 @@ public class RankingController {
     }
 
     @GetMapping
-    public ResponseEntity<List<Ranking>> getAll() {
-        return ResponseEntity.ok(rankingService.findAll());
+    public String list(Model model) {
+        model.addAttribute("rankings", rankingService.findAll());
+        return "admin/rankings/list";
     }
 
-    @GetMapping("/{id}")
-    public ResponseEntity<Ranking> getById(@PathVariable Long id) {
-        return ResponseEntity.ok(rankingService.findById(id));
+    @GetMapping("/new")
+    public String createForm(Model model) {
+        model.addAttribute("ranking", new Ranking());
+        return "admin/rankings/form";
     }
 
     @PostMapping
-    public ResponseEntity<Ranking> create(@RequestBody Ranking ranking) {
-        return ResponseEntity.ok(rankingService.save(ranking));
+    public String save(@ModelAttribute Ranking ranking) {
+        rankingService.save(ranking);
+        return "redirect:/admin/rankings";
     }
 
-    @PutMapping("/{id}")
-    public ResponseEntity<Ranking> update(@PathVariable Long id, @RequestBody Ranking ranking) {
-        Ranking existing = rankingService.findById(id);
-        existing.setName(ranking.getName());
-        existing.setFee(ranking.getFee());
-        existing.setDescription(ranking.getDescription());
-        return ResponseEntity.ok(rankingService.save(existing));
+    @GetMapping("/{id}/edit")
+    public String editForm(@PathVariable Long id, Model model) {
+        model.addAttribute("ranking", rankingService.findById(id));
+        return "admin/rankings/form";
     }
 
-    @DeleteMapping("/{id}")
-    public ResponseEntity<Void> delete(@PathVariable Long id) {
-        rankingService.deleteById(id);
-        return ResponseEntity.noContent().build();
+    @PostMapping("/{id}")
+    public String update(@PathVariable Long id, @ModelAttribute Ranking ranking) {
+        ranking.setId(id);
+        rankingService.save(ranking);
+        return "redirect:/admin/rankings";
+    }
+
+    @PostMapping("/{id}/delete")
+    public String delete(@PathVariable Long id, Model model) {
+        try {
+            rankingService.deleteById(id);
+        } catch (IllegalArgumentException e) {
+            model.addAttribute("error", e.getMessage());
+            model.addAttribute("rankings", rankingService.findAll());
+            return "admin/rankings/list";
+        }
+        return "redirect:/admin/rankings";
     }
 }

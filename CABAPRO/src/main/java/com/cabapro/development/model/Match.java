@@ -32,6 +32,11 @@ public class Match {
     @Column(nullable = false)
     private String location;
 
+    // Relationship with tournaments
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "tournament_id")
+    private Tournament tournament;
+
     // Relationship with assignments
     @OneToMany(mappedBy = "match", cascade = CascadeType.ALL)
     private List<Assignment> assignments = new ArrayList<>();

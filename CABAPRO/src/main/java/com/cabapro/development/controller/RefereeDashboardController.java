@@ -8,33 +8,45 @@ package com.cabapro.development.controller;
  * Role: Referee profile view
  */
 
-import com.cabapro.development.model.Referee;
+import com.cabapro.development.model.AssignmentStatus;
+import com.cabapro.development.service.AssignmentService;
 import com.cabapro.development.service.RefereeService;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.*;
 
 @Controller
+@RequestMapping("/referee/dashboard")
 public class RefereeDashboardController {
 
     private final RefereeService refereeService;
+    private final AssignmentService assignmentService;
 
-    public RefereeDashboardController(RefereeService refereeService) {
+    public RefereeDashboardController(RefereeService refereeService,
+            AssignmentService assignmentService) {
         this.refereeService = refereeService;
+        this.assignmentService = assignmentService;
     }
 
-    /**
-     * Shows the dashboard with referee profile.
-     *
-     * @param id referee ID (simulated until login integration)
-     * @param model thymeleaf model
-     * @return referee dashboard view
-     */
-    @GetMapping("/referee/dashboard/{id}")
+    @GetMapping("/{id}")
     public String viewDashboard(@PathVariable Long id, Model model) {
-        Referee referee = refereeService.findById(id);
+        var referee = refereeService.findById(id);
         model.addAttribute("referee", referee);
+        model.addAttribute("assignments", assignmentService.findByRefereeId(id));
         return "referee/dashboard";
+    }
+
+    @PostMapping("/{refereeId}/assignments/{assignmentId}/accept")
+    public String acceptAssignment(@PathVariable Long refereeId,
+            @PathVariable Long assignmentId) {
+        assignmentService.updateStatus(assignmentId, AssignmentStatus.ACCEPTED);
+        return "redirect:/referee/dashboard/" + refereeId;
+    }
+
+    @PostMapping("/{refereeId}/assignments/{assignmentId}/reject")
+    public String rejectAssignment(@PathVariable Long refereeId,
+            @PathVariable Long assignmentId) {
+        assignmentService.updateStatus(assignmentId, AssignmentStatus.REJECTED);
+        return "redirect:/referee/dashboard/" + refereeId;
     }
 }

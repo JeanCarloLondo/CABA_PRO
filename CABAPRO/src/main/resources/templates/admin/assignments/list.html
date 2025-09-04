@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Assignments</title>
+</head>
+<body>
+    <h1>Assignments</h1>
+
+    <table border="1">
+        <thead>
+            <tr>
+                <th>ID</th>
+                <th>Match</th>
+                <th>Referee</th>
+                <th>Status</th>
+                <th>Assigned At</th>
+                <th>Actions</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr th:each="a : ${assignments}">
+                <td th:text="${a.id}"></td>
+                <td th:text="${a.match.homeTeam} + ' vs ' + ${a.match.awayTeam}"></td>
+                <td th:text="${a.referee.email}"></td>
+                <td th:text="${a.status}"></td>
+                <td th:text="${a.assignedAt}"></td>
+                <td>
+                    <form th:if="${a.status.name() == 'REJECTED'}"
+                          th:action="@{/admin/assignments/{id}/reassign(id=${a.id})}"
+                          method="post" style="display:inline;">
+                        <select name="newRefereeId" required>
+                            <option value="">-- Select Referee --</option>
+                            <option th:each="r : ${referees}"
+                                    th:value="${r.id}"
+                                    th:text="${r.email}">
+                            </option>
+                        </select>
+                        <button type="submit">Reassign</button>
+                    </form>
+                </td>
+            </tr>
+        </tbody>
+    </table>
+
+    <a th:href="@{/admin}">Back to Admin Panel</a>
+</body>
+</html>

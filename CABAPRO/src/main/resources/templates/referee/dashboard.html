@@ -14,6 +14,36 @@
         <p><strong>Ranking:</strong> <span th:text="${referee.ranking.name}"></span></p>
     </div>
 
-    <a href="/">Back to Home</a>
+    <div>
+        <h2>My Assignments</h2>
+        <table border="1">
+            <tr>
+                <th>Match</th>
+                <th>Date</th>
+                <th>Location</th>
+                <th>Status</th>
+                <th>Actions</th>
+            </tr>
+            <tr th:each="a : ${assignments}">
+                <td th:text="${a.match.homeTeam} + ' vs ' + ${a.match.awayTeam}"></td>
+                <td th:text="${a.match.matchDate}"></td>
+                <td th:text="${a.match.location}"></td>
+                <td th:text="${a.status}"></td>
+                <td>
+                    <form th:if="${a.status.name() == 'PENDING'}"
+                          th:action="@{/referee/dashboard/{refId}/assignments/{aId}/accept(refId=${referee.id}, aId=${a.id})}"
+                          method="post" style="display:inline;">
+                        <button type="submit">Accept</button>
+                    </form>
+                    <form th:if="${a.status.name() == 'PENDING'}"
+                          th:action="@{/referee/dashboard/{refId}/assignments/{aId}/reject(refId=${referee.id}, aId=${a.id})}"
+                          method="post" style="display:inline;">
+                        <button type="submit">Reject</button>
+                    </form>
+                </td>
+            </tr>
+        </table>
+    </div>
+
 </body>
 </html>

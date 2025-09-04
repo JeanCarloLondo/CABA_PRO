@@ -30,6 +30,11 @@ public class Admin {
     @OneToMany(mappedBy = "admin", cascade = CascadeType.ALL)
     private List<Assignment> assignments = new ArrayList<>();
 
+    public void addAssignment(Assignment a) {
+    assignments.add(a);
+    a.setAdmin(this);
+    }
+
     // --- Getters & Setters ---
     public Long getId() {
         return id;

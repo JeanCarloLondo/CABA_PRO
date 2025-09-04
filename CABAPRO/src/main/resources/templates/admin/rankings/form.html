@@ -1,0 +1,26 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Ranking Form</title>
+</head>
+<body>
+    <h1 th:text="${ranking.id == null} ? 'Add Ranking' : 'Edit Ranking'"></h1>
+
+    <form th:action="${ranking.id == null} ? @{/admin/rankings} : @{/admin/rankings/{id}(id=${ranking.id})}" method="post">
+        <input type="hidden" th:if="${ranking.id != null}" th:value="${ranking.id}" name="id"/>
+
+        <label>Name:</label>
+        <input type="text" name="name" th:value="${ranking.name}" required/>
+        <br/>
+
+        <label>Description:</label>
+        <textarea name="description" th:text="${ranking.description}"></textarea>
+        <br/>
+
+        <button type="submit" th:text="${ranking.id == null} ? 'Save' : 'Update'"></button>
+    </form>
+
+    <a th:href="@{/admin/rankings}">Back to list</a>
+</body>
+</html>

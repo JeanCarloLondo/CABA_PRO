@@ -9,7 +9,10 @@
 package com.cabapro.development.model;
 
 import jakarta.persistence.*;
+
+import java.util.ArrayList;
 import java.util.Objects;
+import java.util.List;
 
 @Entity
 @Table(name = "ranking")
@@ -28,6 +31,9 @@ public class Ranking {
     @Column(length = 255)
     private String description;
 
+    @OneToMany(mappedBy = "ranking", cascade = CascadeType.ALL, orphanRemoval = false)
+    private List<Referee> referees = new ArrayList<>();
+
     public Ranking() {
         // Default constructor required by JPA
     }
@@ -36,6 +42,10 @@ public class Ranking {
         this.name = name;
         this.fee = fee;
         this.description = description;
+    }
+
+    public void setId(Long id) {
+        this.id = id;
     }
 
     public Long getId() {
@@ -64,6 +74,14 @@ public class Ranking {
 
     public void setDescription(String description) {
         this.description = description;
+    }
+
+    public List<Referee> getReferees() {
+        return referees;
+    }
+
+    public void setReferees(List<Referee> referees) {
+        this.referees = referees;
     }
 
     @Override

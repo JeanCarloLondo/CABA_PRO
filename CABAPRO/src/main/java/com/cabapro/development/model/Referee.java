@@ -8,9 +8,12 @@
 package com.cabapro.development.model;
 
 import jakarta.persistence.*;
+
+import java.util.ArrayList;
 import java.util.Objects;
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;
+import java.util.List;
 
 @Entity
 @Table(name = "referee")
@@ -26,6 +29,9 @@ public class Referee {
     @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "ranking_id", nullable = false)
     private Ranking ranking;
+
+    @OneToMany(mappedBy = "referee", cascade = CascadeType.ALL)
+    private List<Assignment> assignments = new ArrayList<>();
 
     @NotBlank
     @Email

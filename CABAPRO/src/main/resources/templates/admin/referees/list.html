@@ -16,6 +16,7 @@
                 <th>Email</th>
                 <th>Phone Number</th>
                 <th>Ranking</th>
+                <th>Assignments</th>
                 <th>Actions</th>
             </tr>
         </thead>
@@ -26,14 +27,19 @@
                 <td th:text="${referee.phoneNumber}"></td>
                 <td th:text="${referee.ranking.name}"></td>
                 <td>
+                    <a th:href="@{/admin/assignments(refereeId=${referee.id})}">View</a>
+                </td>
+                <td>
                     <a th:href="@{/admin/referees/{id}/edit(id=${referee.id})}">Edit</a>
-                    <form th:action="@{/admin/referees/{id}/delete(id=${referee.id})}" method="post" style="display:inline;">
+                    <form th:action="@{/admin/referees/{id}/delete(id=${referee.id})}" method="post"
+                        style="display:inline;">
                         <button type="submit">Delete</button>
                     </form>
                 </td>
             </tr>
         </tbody>
     </table>
+    <a th:href="@{/admin}">Back</a>
 </body>
 
 </html>

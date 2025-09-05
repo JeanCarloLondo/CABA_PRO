@@ -24,9 +24,9 @@ public class Referee {
     private Long id;
 
     // TODO: relation with User (to be added later)
-    
-    @Enumerated(EnumType.STRING)
-    @Column(nullable = false)
+
+    @ManyToOne
+    @JoinColumn(name = "specialty_id")
     private Specialty specialty;
 
     @ManyToOne(fetch = FetchType.EAGER)

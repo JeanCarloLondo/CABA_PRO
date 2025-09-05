@@ -24,9 +24,9 @@ INSERT INTO admins (id, email, name)
 VALUES (1, 'admin@cabapro.com', 'Main Admin');
 
 -- Insert sample match
-INSERT INTO matches (id, home_team, away_team, match_date, location)
+INSERT INTO matches (id_match, home_team, away_team, match_date, location)
 VALUES (1, 'Lions', 'Tigers', '2025-09-15 18:00:00', 'Central Court');
 
--- Insert sample assignments (PENDING by default)
-INSERT INTO assignments (id, referee_id, match_id, admin_id, status, assigned_at)
-VALUES (1, 1, 1, 1, 'PENDING', NOW());
+INSERT INTO assignments 
+(referee_id, match_id, admin_id, ranking_id, status, assigned_at, assignment_fee) 
+VALUES (1, 1, 1, 1, 'PENDING', NOW(), 100.00);

@@ -1,13 +1,14 @@
 /**
  * Entity representing a basketball match.
  *
- * Author: Jean Londoño
+ * Author: Jean Londoño-Alejandra Ortiz
  * Date: 2025-09-03
  * Role: Domain entity - Match
  */
 package com.cabapro.development.model;
 
 import jakarta.persistence.*;
+
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
@@ -18,7 +19,7 @@ public class Match {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
+    private Long idMatch;
 
     @Column(nullable = false)
     private String homeTeam;
@@ -41,9 +42,14 @@ public class Match {
     @OneToMany(mappedBy = "match", cascade = CascadeType.ALL)
     private List<Assignment> assignments = new ArrayList<>();
 
+     // --- Domain methods ---
+    public String summaryMatch() {
+        return "Match " + idMatch + " — Date: " + matchDate + ", Location: " + location;
+    }
+
     // --- Getters & Setters ---
-    public Long getId() { return id; }
-    public void setId(Long id) { this.id = id; }
+    public Long getId() { return idMatch; }
+    public void setId(Long id) { this.idMatch = id; }
 
     public String getHomeTeam() { return homeTeam; }
     public void setHomeTeam(String homeTeam) { this.homeTeam = homeTeam; }

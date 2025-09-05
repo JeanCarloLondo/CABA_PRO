@@ -14,7 +14,7 @@ import jakarta.validation.constraints.*;
 @Entity
 @Table(name = "users")
 public class CustomUser {
-    
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long idUser;
@@ -36,31 +36,50 @@ public class CustomUser {
     private String role; // Ej: "ADMIN", "REFEREE"
 
     // --- Relation ---
-    @OneToMany(mappedBy = "referee", cascade = CascadeType.ALL, orphanRemoval = true)
-    private java.util.List<Assignment> assignments;
 
     // --- Domain Methods ---
     public boolean login(String email, String password) {
         return this.email.equals(email) && this.password.equals(password);
     }
 
-    // --- Getters y Setters ---
-    public Long getIdUser() { return idUser; }
-    public void setIdUser(Long idUser) { this.idUser = idUser; }
+    // --- Getters and Setters ---
+    public Long getIdUser() {
+        return idUser;
+    }
 
-    public String getName() { return name; }
-    public void setName(String name) { this.name = name; }
+    public void setIdUser(Long idUser) {
+        this.idUser = idUser;
+    }
 
-    public String getEmail() { return email; }
-    public void setEmail(String email) { this.email = email; }
+    public String getName() {
+        return name;
+    }
 
-    public String getPassword() { return password; }
-    public void setPassword(String password) { this.password = password; }
+    public void setName(String name) {
+        this.name = name;
+    }
 
-    public String getRole() { return role; }
-    public void setRole(String role) { this.role = role; }
+    public String getEmail() {
+        return email;
+    }
 
-    public java.util.List<Assignment> getAssignments() { return assignments; }
-    public void setAssignments(java.util.List<Assignment> assignments) { this.assignments = assignments; }
+    public void setEmail(String email) {
+        this.email = email;
+    }
+
+    public String getPassword() {
+        return password;
+    }
+
+    public void setPassword(String password) {
+        this.password = password;
+    }
+
+    public String getRole() {
+        return role;
+    }
+
+    public void setRole(String role) {
+        this.role = role;
+    }
 }
-

@@ -16,7 +16,7 @@ public class SpecialtyController {
     @Autowired
     private SpecialtyRepository specialtyRepo;
 
-    // Listar especialidades
+    // list of specialties
     @GetMapping
     public String listSpecialties(Model model) {
         List<Specialty> specialties = specialtyRepo.findAll();
@@ -24,7 +24,7 @@ public class SpecialtyController {
         return "specialty/list"; // resources/templates/specialty/list.html
     }
 
-    // Ver detalle de una especialidad
+    // see details of a specialty
     @GetMapping("/{id}")
     public String detailSpecialty(@PathVariable Long id, Model model) {
         Optional<Specialty> specialty = specialtyRepo.findById(id);
@@ -36,21 +36,21 @@ public class SpecialtyController {
         }
     }
 
-    // Formulario crear especialidad
+    // form to create new specialty
     @GetMapping("/create")
     public String createSpecialtyForm(Model model) {
         model.addAttribute("specialty", new Specialty());
         return "specialty/form";
     }
 
-    // Guardar especialidad
+    // save new specialty
     @PostMapping("/create")
     public String saveSpecialty(@ModelAttribute Specialty specialty) {
         specialtyRepo.save(specialty);
         return "redirect:/specialties";
     }
 
-    // Formulario editar especialidad
+    // form to edit specialty
     @GetMapping("/edit/{id}")
     public String editSpecialtyForm(@PathVariable Long id, Model model) {
         Optional<Specialty> specialty = specialtyRepo.findById(id);
@@ -62,7 +62,7 @@ public class SpecialtyController {
         }
     }
 
-    // Guardar edición
+    // save edited specialty
     @PostMapping("/edit/{id}")
     public String updateSpecialty(@PathVariable Long id, @ModelAttribute Specialty specialty) {
         specialty.setIdSpecialty(id);
@@ -70,7 +70,7 @@ public class SpecialtyController {
         return "redirect:/specialties";
     }
 
-    // Eliminar
+    // delete
     @GetMapping("/delete/{id}")
     public String deleteSpecialty(@PathVariable Long id) {
         specialtyRepo.deleteById(id);

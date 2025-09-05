@@ -10,7 +10,6 @@ package com.cabapro.development.model;
 import jakarta.persistence.*;
 import java.time.LocalDateTime;
 import java.math.BigDecimal;
-
 @Entity
 @Table(name = "assignments")
 public class Assignment {
@@ -42,8 +41,8 @@ public class Assignment {
     private LocalDateTime assignedAt = LocalDateTime.now();
 
     // Specialty of the referee in this assignment (COURT or TABLE)
-    @Enumerated(EnumType.STRING)
-    @Column(nullable = false)
+    @ManyToOne
+    @JoinColumn(name = "specialty_id")
     private Specialty specialty;
 
     // Ranking/level of the referee at the time of assignment
@@ -79,30 +78,75 @@ public class Assignment {
     }
 
     // --- Getters & Setters ---
-    public Long getId() { return id; }
-    public void setId(Long id) { this.id = id; }
+    public Long getId() {
+        return id;
+    }
 
-    public Referee getReferee() { return referee; }
-    public void setReferee(Referee referee) { this.referee = referee; }
+    public void setId(Long id) {
+        this.id = id;
+    }
 
-    public Match getMatch() { return match; }
-    public void setMatch(Match match) { this.match = match; }
+    public Referee getReferee() {
+        return referee;
+    }
 
-    public Admin getAdmin() { return admin; }
-    public void setAdmin(Admin admin) { this.admin = admin; }
+    public void setReferee(Referee referee) {
+        this.referee = referee;
+    }
 
-    public AssignmentStatus getStatus() { return status; }
-    public void setStatus(AssignmentStatus status) { this.status = status; }
+    public Match getMatch() {
+        return match;
+    }
 
-    public LocalDateTime getAssignedAt() { return assignedAt; }
-    public void setAssignedAt(LocalDateTime assignedAt) { this.assignedAt = assignedAt; }
+    public void setMatch(Match match) {
+        this.match = match;
+    }
 
-    public Specialty getSpecialty() { return specialty; }
-    public void setSpecialty(Specialty specialty) { this.specialty = specialty; }
+    public Admin getAdmin() {
+        return admin;
+    }
 
-    public Ranking getLevel() { return level; }
-    public void setLevel(Ranking level) { this.level = level; }
+    public void setAdmin(Admin admin) {
+        this.admin = admin;
+    }
 
-    public BigDecimal getAssignmentFee() { return assignmentFee; }
-    public void setAssignmentFee(BigDecimal assignmentFee) { this.assignmentFee = assignmentFee; }
+    public AssignmentStatus getStatus() {
+        return status;
+    }
+
+    public void setStatus(AssignmentStatus status) {
+        this.status = status;
+    }
+
+    public LocalDateTime getAssignedAt() {
+        return assignedAt;
+    }
+
+    public void setAssignedAt(LocalDateTime assignedAt) {
+        this.assignedAt = assignedAt;
+    }
+
+    public Specialty getSpecialty() {
+        return specialty;
+    }
+
+    public void setSpecialty(Specialty specialty) {
+        this.specialty = specialty;
+    }
+
+    public Ranking getLevel() {
+        return level;
+    }
+
+    public void setLevel(Ranking level) {
+        this.level = level;
+    }
+
+    public BigDecimal getAssignmentFee() {
+        return assignmentFee;
+    }
+
+    public void setAssignmentFee(BigDecimal assignmentFee) {
+        this.assignmentFee = assignmentFee;
+    }
 }

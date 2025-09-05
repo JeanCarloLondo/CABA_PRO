@@ -28,6 +28,9 @@ public class Specialty {
     @OneToMany(mappedBy = "specialty", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<Assignment> assignments;
 
+    @OneToMany(mappedBy = "specialty", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<Referee> referees;
+
     // --- Domain Methods ---
     public boolean isCompatibleMatch(Match match) {
         return match != null && match.getLocation() != null;
@@ -38,15 +41,35 @@ public class Specialty {
     }
 
     // --- Getters y Setters ---
-    public Long getIdSpecialty() { return idSpecialty; }
-    public void setIdSpecialty(Long idSpecialty) { this.idSpecialty = idSpecialty; }
+    public Long getIdSpecialty() {
+        return idSpecialty;
+    }
 
-    public String getName() { return name; }
-    public void setName(String name) { this.name = name; }
+    public void setIdSpecialty(Long idSpecialty) {
+        this.idSpecialty = idSpecialty;
+    }
 
-    public String getDescription() { return description; }
-    public void setDescription(String description) { this.description = description; }
+    public String getName() {
+        return name;
+    }
 
-    public List<Assignment> getAssignments() { return assignments; }
-    public void setAssignments(List<Assignment> assignments) { this.assignments = assignments; }
+    public void setName(String name) {
+        this.name = name;
+    }
+
+    public String getDescription() {
+        return description;
+    }
+
+    public void setDescription(String description) {
+        this.description = description;
+    }
+
+    public List<Assignment> getAssignments() {
+        return assignments;
+    }
+
+    public void setAssignments(List<Assignment> assignments) {
+        this.assignments = assignments;
+    }
 }

@@ -55,7 +55,7 @@ public class SecurityConfig {
                         .requestMatchers("/referees/**").hasRole("REFEREE")
                         .anyRequest().authenticated())
                 .formLogin(form -> form
-                        .loginPage("/users/register")
+                        .loginPage("/login")
                         .successHandler(successHandler) //  redirect depends on role
                         .permitAll())
                 .logout(logout -> logout

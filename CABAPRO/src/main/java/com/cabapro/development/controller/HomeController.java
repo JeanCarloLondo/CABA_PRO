@@ -12,15 +12,16 @@ import org.springframework.web.bind.annotation.GetMapping;
 
 @Controller
 public class HomeController {
-    //home page
+
+    // Home page -> redirect to register
     @GetMapping("/")
     public String index() {
-        return "home/index"; // resources/templates/home/index.html
+        return "redirect:/user/register";
     }
 
-    //login page
+    // Login page
     @GetMapping("/login")
     public String login() {
-        return "home/login";// resources/templates/home/login.html
+        return "home/login"; // resources/templates/home/login.html
     }
 }

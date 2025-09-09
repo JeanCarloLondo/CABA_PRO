@@ -1,19 +1,20 @@
 package com.cabapro.development.controller;
 
 import com.cabapro.development.model.CustomUser;
+import com.cabapro.development.model.Ranking;
 import com.cabapro.development.model.Referee;
-import com.cabapro.development.service.RankingService;
+import com.cabapro.development.model.Specialty;
 import com.cabapro.development.service.RefereeService;
+import com.cabapro.development.service.RankingService;
 import com.cabapro.development.service.SpecialtyService;
 import com.cabapro.development.repository.UserRepository;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Controller;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
-/**
- * Controller for managing Referee entities (Admin only).
- */
 @Controller
 @RequestMapping("/admin/referees")
 public class RefereeController {
@@ -36,103 +37,119 @@ public class RefereeController {
         this.userRepository = userRepository;
     }
 
-    /** List all referees */
     @GetMapping
-    public String list(Model model) {
-        model.addAttribute("referees", refereeService.findAll());
+    public String list(@RequestParam(value = "q", required = false) String q, Model model) {
+        if (q != null && !q.isBlank()) {
+            model.addAttribute("referees", refereeService.searchByEmail(q.trim()));
+        } else {
+            model.addAttribute("referees", refereeService.findAll());
+        }
         return "admin/referees/list";
     }
 
-    /** Search referees (by email only) */
-    @GetMapping("/search")
-    public String search(@RequestParam("query") String query, Model model) {
-        model.addAttribute("referees", refereeService.searchByEmail(query));
-        return "admin/referees/list";
-    }
-
-    /** Show form for creating referee */
     @GetMapping("/new")
-    public String createForm(Model model) {
-        model.addAttribute("referee", new Referee());
+    public String createForm(@RequestParam(value = "rankingId", required = false) Long rankingId,
+                             Model model) {
+        Referee ref = new Referee();
+        if (rankingId != null) {
+            ref.setRanking(rankingService.findById(rankingId)); // preselección desde Rankings
+        }
+        model.addAttribute("referee", ref);
         model.addAttribute("rankings", rankingService.findAll());
-        model.addAttribute("specialties", specialtyService.findAll());
+        model.addAttribute("specialties", specialtyService.findAll()); // <-- SIEMPRE cargo
+        model.addAttribute("isCreate", true); // muestra password solo al crear
         return "admin/referees/form";
     }
 
-    /** Create referee */
     @PostMapping
+    @Transactional
     public String create(@ModelAttribute Referee referee,
-                         @RequestParam("name") String name,
                          @RequestParam("rankingId") Long rankingId,
-                         @RequestParam("specialtyId") Long specialtyId,
+                         @RequestParam(value = "specialtyId", required = false) Long specialtyId,
                          @RequestParam("password") String password,
+                         RedirectAttributes ra,
                          Model model) {
         try {
             referee.setId(null);
-            referee.setRanking(rankingService.findById(rankingId));
-            referee.setSpecialty(specialtyService.findById(specialtyId));
+
+            Ranking ranking = rankingService.findById(rankingId);
+            referee.setRanking(ranking);
+
+            if (specialtyId != null) {
+                Specialty specialty = specialtyService.findById(specialtyId);
+                referee.setSpecialty(specialty);
+            } else {
+                referee.setSpecialty(null); // specialty opcional
+            }
+
+            // Guarda referee
             refereeService.save(referee);
 
-            // Create associated CustomUser for login
+            // Crea usuario de login
             CustomUser user = new CustomUser();
-            user.setName(name); // requerido por @NotBlank en CustomUser
-            user.setEmail(referee.getEmail());
+            String normalizedEmail = referee.getEmail().trim().toLowerCase();
+            user.setName("Referee " + normalizedEmail); // evita @NotBlank en name
+            user.setEmail(normalizedEmail);
             user.setPassword(passwordEncoder.encode(password));
             user.setRole("REFEREE");
             userRepository.save(user);
 
+            ra.addFlashAttribute("success", "Referee created: " + normalizedEmail);
             return "redirect:/admin/referees";
         } catch (IllegalArgumentException e) {
             model.addAttribute("error", e.getMessage());
             model.addAttribute("referee", referee);
             model.addAttribute("rankings", rankingService.findAll());
             model.addAttribute("specialties", specialtyService.findAll());
+            model.addAttribute("isCreate", true);
             return "admin/referees/form";
         }
     }
 
-    /** Show form for editing referee */
     @GetMapping("/{id}/edit")
     public String editForm(@PathVariable Long id, Model model) {
         model.addAttribute("referee", refereeService.findById(id));
         model.addAttribute("rankings", rankingService.findAll());
         model.addAttribute("specialties", specialtyService.findAll());
+        model.addAttribute("isCreate", false);
         return "admin/referees/form";
     }
 
-    /** Update referee */
     @PostMapping("/{id}")
     public String update(@PathVariable Long id,
                          @ModelAttribute Referee referee,
-                         @RequestParam("name") String name,
                          @RequestParam("rankingId") Long rankingId,
-                         @RequestParam("specialtyId") Long specialtyId,
+                         @RequestParam(value = "specialtyId", required = false) Long specialtyId,
+                         RedirectAttributes ra,
                          Model model) {
         try {
             referee.setRanking(rankingService.findById(rankingId));
-            referee.setSpecialty(specialtyService.findById(specialtyId));
+            if (specialtyId != null) {
+                referee.setSpecialty(specialtyService.findById(specialtyId));
+            } else {
+                referee.setSpecialty(null);
+            }
             refereeService.update(id, referee);
-
-            // Update linked CustomUser's name (email is the key)
-            userRepository.findByEmail(referee.getEmail()).ifPresent(u -> {
-                u.setName(name);
-                userRepository.save(u);
-            });
-
+            ra.addFlashAttribute("success", "Referee updated.");
             return "redirect:/admin/referees";
         } catch (IllegalArgumentException e) {
             model.addAttribute("error", e.getMessage());
             model.addAttribute("referee", referee);
             model.addAttribute("rankings", rankingService.findAll());
             model.addAttribute("specialties", specialtyService.findAll());
+            model.addAttribute("isCreate", false);
             return "admin/referees/form";
         }
     }
 
-    /** Delete referee */
     @PostMapping("/{id}/delete")
-    public String delete(@PathVariable Long id) {
-        refereeService.deleteById(id);
+    public String delete(@PathVariable Long id, RedirectAttributes ra) {
+        try {
+            refereeService.deleteById(id);
+            ra.addFlashAttribute("success", "Referee deleted.");
+        } catch (IllegalArgumentException e) {
+            ra.addFlashAttribute("error", e.getMessage());
+        }
         return "redirect:/admin/referees";
     }
 }

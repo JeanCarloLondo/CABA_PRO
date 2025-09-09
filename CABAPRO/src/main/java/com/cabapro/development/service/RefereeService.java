@@ -9,8 +9,10 @@ package com.cabapro.development.service;
 
 import com.cabapro.development.model.Ranking;
 import com.cabapro.development.model.Referee;
+import com.cabapro.development.model.Specialty;
 import com.cabapro.development.repository.RefereeRepository;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 
@@ -110,5 +112,33 @@ public class RefereeService {
      */
     public List<Referee> searchByEmail(String query) {
         return refereeRepository.findByEmailContainingIgnoreCase(query);
+    }
+
+    public List<Referee> findByRanking(Long rankingId) {
+    return refereeRepository.findByRankingId(rankingId);
+    }
+
+     public List<Referee> findBySpecialty(Long idSpecialty) {
+        return refereeRepository.findBySpecialty_IdSpecialty(idSpecialty);
+    }
+
+    public List<Referee> findWithoutSpecialty() {
+        return refereeRepository.findBySpecialtyIsNull();
+    }
+
+    public long countBySpecialty(Long idSpecialty) {
+        return refereeRepository.countBySpecialty_IdSpecialty(idSpecialty);
+    }
+
+    @Transactional
+    public void assignSpecialty(Referee ref, Specialty sp) {
+        ref.setSpecialty(sp);
+        refereeRepository.save(ref);
+    }
+
+    @Transactional
+    public void unassignSpecialty(Referee ref) {
+        ref.setSpecialty(null);
+        refereeRepository.save(ref);
     }
 }

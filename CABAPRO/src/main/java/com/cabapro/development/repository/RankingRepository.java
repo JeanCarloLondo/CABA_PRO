@@ -1,10 +1,3 @@
-/**
- * Repository interface for managing Ranking entities.
- *
- * Author: Jean Londoño
- * Date: 2025-08-31
- * Role: Data access layer - Ranking
- */
 package com.cabapro.development.repository;
 
 import com.cabapro.development.model.Ranking;
@@ -16,11 +9,9 @@ import java.util.Optional;
 @Repository
 public interface RankingRepository extends JpaRepository<Ranking, Long> {
 
-    /**
-     * Finds a ranking by its name.
-     *
-     * @param name the ranking name (e.g., FIBA, National, Local)
-     * @return an Optional containing the Ranking if found, otherwise empty
-     */
-    Optional<Ranking> findByName(String name);
+    /** Búsqueda exacta (case-insensitive) por nombre */
+    Optional<Ranking> findByNameIgnoreCase(String name);
+
+    /** Verificación de existencia por nombre (case-insensitive) */
+    boolean existsByNameIgnoreCase(String name);
 }

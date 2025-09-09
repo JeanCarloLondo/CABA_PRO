@@ -1,79 +1,147 @@
 package com.cabapro.development.controller;
 
+import com.cabapro.development.model.Referee;
 import com.cabapro.development.model.Specialty;
-import com.cabapro.development.repository.SpecialtyRepository;
-import org.springframework.beans.factory.annotation.Autowired;
+import com.cabapro.development.service.RefereeService;
+import com.cabapro.development.service.SpecialtyService;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
-
-import java.util.List;
-import java.util.Optional;
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 @Controller
-@RequestMapping("/specialties")
+@RequestMapping("/admin/specialty")
 public class SpecialtyController {
-    @Autowired
-    private SpecialtyRepository specialtyRepo;
 
-    // list of specialties
+    private final SpecialtyService specialtyService;
+    private final RefereeService refereeService;
+
+    public SpecialtyController(SpecialtyService specialtyService,
+                               RefereeService refereeService) {
+        this.specialtyService = specialtyService;
+        this.refereeService = refereeService;
+    }
+
+    // LIST
     @GetMapping
-    public String listSpecialties(Model model) {
-        List<Specialty> specialties = specialtyRepo.findAll();
-        model.addAttribute("specialties", specialties);
-        return "specialty/list"; // resources/templates/specialty/list.html
+    public String list(Model model,
+                       @ModelAttribute("success") String success,
+                       @ModelAttribute("error") String error) {
+        model.addAttribute("specialty", specialtyService.findAll());
+        if (success != null && !success.isBlank()) model.addAttribute("success", success);
+        if (error != null && !error.isBlank()) model.addAttribute("error", error);
+        return "admin/specialty/list";
     }
 
-    // see details of a specialty
-    @GetMapping("/{id}")
-    public String detailSpecialty(@PathVariable Long id, Model model) {
-        Optional<Specialty> specialty = specialtyRepo.findById(id);
-        if (specialty.isPresent()) {
-            model.addAttribute("specialty", specialty.get());
-            return "specialty/detail"; // resources/templates/specialty/detail.html
-        } else {
-            return "redirect:/specialties";
+    // CREATE FORM
+    @GetMapping("/new")
+    public String createForm(Model model) {
+        if (!model.containsAttribute("specialty")) model.addAttribute("specialty", new Specialty());
+        return "admin/specialty/form";
+    }
+
+    // CREATE
+    @PostMapping
+    public String create(@ModelAttribute Specialty specialty, RedirectAttributes ra) {
+        try {
+            specialtyService.create(specialty);
+            ra.addFlashAttribute("success", "Specialty created successfully.");
+            return "redirect:/admin/specialty";
+        } catch (IllegalArgumentException e) {
+            ra.addFlashAttribute("error", e.getMessage());
+            ra.addFlashAttribute("specialty", specialty);
+            return "redirect:/admin/specialty/new";
         }
     }
 
-    // form to create new specialty
-    @GetMapping("/create")
-    public String createSpecialtyForm(Model model) {
-        model.addAttribute("specialty", new Specialty());
-        return "specialty/form";
-    }
-
-    // save new specialty
-    @PostMapping("/create")
-    public String saveSpecialty(@ModelAttribute Specialty specialty) {
-        specialtyRepo.save(specialty);
-        return "redirect:/specialties";
-    }
-
-    // form to edit specialty
-    @GetMapping("/edit/{id}")
-    public String editSpecialtyForm(@PathVariable Long id, Model model) {
-        Optional<Specialty> specialty = specialtyRepo.findById(id);
-        if (specialty.isPresent()) {
-            model.addAttribute("specialty", specialty.get());
-            return "specialty/form";
-        } else {
-            return "redirect:/specialties";
+    // EDIT FORM
+    @GetMapping("/{id}/edit")
+    public String editForm(@PathVariable Long id, Model model, RedirectAttributes ra) {
+        try {
+            if (!model.containsAttribute("specialty"))
+                model.addAttribute("specialty", specialtyService.findById(id));
+            return "admin/specialty/form";
+        } catch (IllegalArgumentException e) {
+            ra.addFlashAttribute("error", e.getMessage());
+            return "redirect:/admin/specialty";
         }
     }
 
-    // save edited specialty
-    @PostMapping("/edit/{id}")
-    public String updateSpecialty(@PathVariable Long id, @ModelAttribute Specialty specialty) {
-        specialty.setIdSpecialty(id);
-        specialtyRepo.save(specialty);
-        return "redirect:/specialties";
+    // UPDATE
+    @PostMapping("/{id}")
+    public String update(@PathVariable Long id,
+                         @ModelAttribute Specialty specialty,
+                         RedirectAttributes ra) {
+        try {
+            specialtyService.update(id, specialty);
+            ra.addFlashAttribute("success", "Specialty updated successfully.");
+            return "redirect:/admin/specialty";
+        } catch (IllegalArgumentException e) {
+            ra.addFlashAttribute("error", e.getMessage());
+            ra.addFlashAttribute("specialty", specialty);
+            return "redirect:/admin/specialty/" + id + "/edit";
+        }
     }
 
-    // delete
-    @GetMapping("/delete/{id}")
-    public String deleteSpecialty(@PathVariable Long id) {
-        specialtyRepo.deleteById(id);
-        return "redirect:/specialties";
+    // DELETE (con regla: no borrar si está en uso)
+    @PostMapping("/{id}/delete")
+    public String delete(@PathVariable Long id, RedirectAttributes ra) {
+        try {
+            specialtyService.deleteById(id);
+            ra.addFlashAttribute("success", "Specialty deleted.");
+        } catch (IllegalStateException e) {
+            ra.addFlashAttribute("error", e.getMessage());
+        } catch (IllegalArgumentException e) {
+            ra.addFlashAttribute("error", e.getMessage());
+        }
+        return "redirect:/admin/specialty";
+    }
+
+    // ====== Referees asociados a una specialty ======
+
+    @GetMapping("/{id}/referees")
+    public String referees(@PathVariable Long id, Model model, RedirectAttributes ra) {
+        try {
+            Specialty sp = specialtyService.findById(id);
+            model.addAttribute("specialty", sp);
+            model.addAttribute("referees", refereeService.findBySpecialty(id));
+            // Para asignar rápido: lista de árbitros sin specialty
+            model.addAttribute("availableReferees", refereeService.findWithoutSpecialty());
+            return "admin/specialty/referees";
+        } catch (IllegalArgumentException e) {
+            ra.addFlashAttribute("error", e.getMessage());
+            return "redirect:/admin/specialty";
+        }
+    }
+
+    // Asignar un referee a esta specialty
+    @PostMapping("/{id}/assign")
+    public String assign(@PathVariable Long id,
+                         @RequestParam("refereeId") Long refereeId,
+                         RedirectAttributes ra) {
+        try {
+            Specialty sp = specialtyService.findById(id);
+            Referee ref = refereeService.findById(refereeId);
+            refereeService.assignSpecialty(ref, sp);
+            ra.addFlashAttribute("success", "Referee assigned to specialty.");
+        } catch (IllegalArgumentException e) {
+            ra.addFlashAttribute("error", e.getMessage());
+        }
+        return "redirect:/admin/specialty/" + id + "/referees";
+    }
+
+    // Quitar specialty del referee
+    @PostMapping("/{id}/unassign")
+    public String unassign(@PathVariable Long id,
+                           @RequestParam("refereeId") Long refereeId,
+                           RedirectAttributes ra) {
+        try {
+            Referee ref = refereeService.findById(refereeId);
+            refereeService.unassignSpecialty(ref);
+            ra.addFlashAttribute("success", "Specialty removed from referee.");
+        } catch (IllegalArgumentException e) {
+            ra.addFlashAttribute("error", e.getMessage());
+        }
+        return "redirect:/admin/specialty/" + id + "/referees";
     }
 }

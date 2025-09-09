@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+  <meta charset="UTF-8">
+  <title th:text="${specialty.idSpecialty == null} ? 'Add Specialty' : 'Edit Specialty'">Specialty Form</title>
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+</head>
+<body>
+<div class="container mt-4">
+
+  <div class="d-flex justify-content-between align-items-center mb-3">
+    <h1 class="mb-0" th:text="${specialty.idSpecialty == null} ? 'Add Specialty' : 'Edit Specialty'">Specialty</h1>
+    <a class="btn btn-secondary" th:href="@{/admin/specialty}">⬅ Back</a>
+  </div>
+
+  <div th:if="${error}" class="alert alert-danger" th:text="${error}"></div>
+
+  <form th:action="${specialty.idSpecialty == null} ? @{/admin/specialty} : @{/admin/specialty/{id}(id=${specialty.idSpecialty})}"
+        method="post" class="mt-3">
+
+    <div class="mb-3">
+      <label class="form-label">Name *</label>
+      <input class="form-control" type="text" name="name" th:value="${specialty.name}" required maxlength="100">
+    </div>
+
+    <div class="mb-3">
+      <label class="form-label">Description</label>
+      <textarea class="form-control" name="description" rows="4" th:text="${specialty.description}"></textarea>
+    </div>
+
+    <div class="d-flex gap-2">
+      <button type="submit" class="btn btn-success" th:text="${specialty.idSpecialty == null} ? 'Save' : 'Update'">Save</button>
+      <a class="btn btn-outline-secondary" th:href="@{/admin/specialty}">Cancel</a>
+    </div>
+  </form>
+</div>
+</body>
+</html>

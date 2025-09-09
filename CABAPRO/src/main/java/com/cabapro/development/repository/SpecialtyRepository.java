@@ -1,9 +1,13 @@
 package com.cabapro.development.repository;
+
 import com.cabapro.development.model.Specialty;
 import org.springframework.data.jpa.repository.JpaRepository;
-import org.springframework.stereotype.Repository;   
+import org.springframework.stereotype.Repository;
+
+import java.util.List;
 
 @Repository
 public interface SpecialtyRepository extends JpaRepository<Specialty, Long> {
-    // Custom query methods (if needed) can be defined here
+    List<Specialty> findAllByOrderByNameAsc();
+    boolean existsByNameIgnoreCase(String name);
 }

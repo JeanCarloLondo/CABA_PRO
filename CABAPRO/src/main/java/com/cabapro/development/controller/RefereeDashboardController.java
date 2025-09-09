@@ -1,52 +1,33 @@
 package com.cabapro.development.controller;
 
-/**
- * Controller for Referee Dashboard.
- *
- * Author: Jean Londoño
- * Date: 2025-09-03
- * Role: Referee profile view
- */
-
-import com.cabapro.development.model.AssignmentStatus;
-import com.cabapro.development.service.AssignmentService;
-import com.cabapro.development.service.RefereeService;
+import com.cabapro.development.model.Referee;
+import com.cabapro.development.repository.AssignmentRepository;
+import com.cabapro.development.repository.RefereeRepository;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.GetMapping;
 
 @Controller
-@RequestMapping("/referee/dashboard")
 public class RefereeDashboardController {
 
-    private final RefereeService refereeService;
-    private final AssignmentService assignmentService;
+    private final RefereeRepository refereeRepo;
+    private final AssignmentRepository assignmentRepo;
 
-    public RefereeDashboardController(RefereeService refereeService,
-            AssignmentService assignmentService) {
-        this.refereeService = refereeService;
-        this.assignmentService = assignmentService;
+    public RefereeDashboardController(RefereeRepository refereeRepo,
+                                      AssignmentRepository assignmentRepo) {
+        this.refereeRepo = refereeRepo;
+        this.assignmentRepo = assignmentRepo;
     }
 
-    @GetMapping("/{id}")
-    public String viewDashboard(@PathVariable Long id, Model model) {
-        var referee = refereeService.findById(id);
-        model.addAttribute("referee", referee);
-        model.addAttribute("assignments", assignmentService.findByRefereeId(id));
-        return "referee/dashboard";
-    }
-
-    @PostMapping("/{refereeId}/assignments/{assignmentId}/accept")
-    public String acceptAssignment(@PathVariable Long refereeId,
-            @PathVariable Long assignmentId) {
-        assignmentService.updateStatus(assignmentId, AssignmentStatus.ACCEPTED);
-        return "redirect:/referee/dashboard/" + refereeId;
-    }
-
-    @PostMapping("/{refereeId}/assignments/{assignmentId}/reject")
-    public String rejectAssignment(@PathVariable Long refereeId,
-            @PathVariable Long assignmentId) {
-        assignmentService.updateStatus(assignmentId, AssignmentStatus.REJECTED);
-        return "redirect:/referee/dashboard/" + refereeId;
+    @GetMapping("/referee/matches")
+    public String myMatches(Model model) {
+        Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+        String email = auth.getName();
+        Referee me = refereeRepo.findByEmail(email)
+                .orElseThrow(() -> new IllegalArgumentException("Referee not found for " + email));
+        model.addAttribute("assignments", assignmentRepo.findByReferee_Id(me.getId()));
+        return "referee/matches";
     }
 }

@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+  <meta charset="UTF-8">
+  <title th:text="${match.idMatch == null} ? 'Add Match' : 'Edit Match'">Match</title>
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+</head>
+<body>
+<div class="container mt-4">
+  <div class="d-flex justify-content-between align-items-center mb-3">
+    <h1 class="mb-0" th:text="${match.idMatch == null} ? 'Add Match' : 'Edit Match'">Match</h1>
+    <a class="btn btn-secondary" th:href="@{/admin/matches}">⬅ Back</a>
+  </div>
+
+  <form th:action="${match.idMatch == null} ? @{/admin/matches} : @{/admin/matches/{id}(id=${match.idMatch})}"
+        method="post" class="row g-3">
+
+    <div class="col-md-6">
+      <label class="form-label">Tournament *</label>
+      <select name="tournamentId" class="form-select" required>
+        <option value="">-- Select --</option>
+        <option th:each="t : ${tournaments}" th:value="${t.id}"
+                th:selected="${match.tournament != null and match.tournament.id == t.id}"
+                th:text="${t.name}"></option>
+      </select>
+    </div>
+
+    <div class="col-md-6">
+      <label class="form-label">Date *</label>
+      <input type="datetime-local" name="matchDate" class="form-control" required
+             th:value="${match.matchDate != null} ? ${#temporals.format(match.matchDate, 'yyyy-MM-dd''T''HH:mm')} : ''"/>
+    </div>
+
+    <div class="col-md-6">
+      <label class="form-label">Location *</label>
+      <input type="text" name="location" class="form-control" required th:value="${match.location}"/>
+    </div>
+
+    <div class="col-md-3">
+      <label class="form-label">Home team</label>
+      <input type="text" name="homeTeam" class="form-control" th:value="${match.homeTeam}"/>
+    </div>
+
+    <div class="col-md-3">
+      <label class="form-label">Away team</label>
+      <input type="text" name="awayTeam" class="form-control" th:value="${match.awayTeam}"/>
+    </div>
+
+    <div class="col-12">
+      <button class="btn btn-success" type="submit">Save</button>
+      <a class="btn btn-outline-secondary" th:href="@{/admin/matches}">Cancel</a>
+    </div>
+  </form>
+</div>
+</body>
+</html>

@@ -23,4 +23,7 @@ public interface RefereeRepository extends JpaRepository<Referee, Long> {
     List<Referee> findBySpecialtyIsNull();
     List<Referee> findBySpecialty_IdSpecialty(Long idSpecialty);
     long countBySpecialty_IdSpecialty(Long idSpecialty);
+
+    List<Referee> findByRankingIsNotNullAndSpecialtyIsNotNull();
+
 }

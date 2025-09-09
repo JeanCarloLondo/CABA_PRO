@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+  <meta charset="UTF-8">
+  <title>Manage referees</title>
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+</head>
+<body>
+<div class="container mt-4">
+  <div class="d-flex justify-content-between align-items-center mb-3">
+    <div>
+      <h1 class="mb-0">Manage referees</h1>
+      <div class="text-muted">
+        <span th:text="${match.tournament.name}">Tournament</span> ·
+        <span th:text="${#temporals.format(match.matchDate,'yyyy-MM-dd HH:mm')}">date</span> ·
+        <span th:text="${match.location}">location</span>
+      </div>
+    </div>
+    <a class="btn btn-secondary" th:href="@{/admin/matches}">⬅ Back to Matches</a>
+  </div>
+
+  <div th:if="${success}" class="alert alert-success" th:text="${success}"></div>
+  <div th:if="${error}" class="alert alert-danger" th:text="${error}"></div>
+
+  <!-- Add -->
+  <form class="row g-2 mb-3" th:action="@{/admin/matches/{id}/assign(id=${match.idMatch})}" method="post">
+    <div class="col-md-6">
+      <select name="refereeId" class="form-select" required>
+        <option value="">-- Select eligible referee --</option>
+        <option th:each="r : ${eligibleReferees}" th:value="${r.id}"
+                th:text="${r.email + ' · ' + (r.ranking != null ? r.ranking.name : '-') + ' · ' + (r.specialty != null ? r.specialty.name : '-') }"></option>
+      </select>
+    </div>
+    <div class="col-md-6">
+      <button class="btn btn-success">➕ Assign</button>
+    </div>
+  </form>
+
+  <!-- Assigned list -->
+  <table class="table table-striped align-middle">
+    <thead>
+    <tr>
+      <th>Email</th>
+      <th>Ranking</th>
+      <th>Specialty</th>
+      <th>Status</th>
+      <th>Fee</th>
+      <th style="width:15%">Actions</th>
+    </tr>
+    </thead>
+    <tbody>
+    <tr th:each="a : ${assignments}">
+      <td th:text="${a.referee.email}">email</td>
+      <td th:text="${a.ranking != null ? a.ranking.name : '—'}">ranking</td>
+      <td th:text="${a.specialty != null ? a.specialty.name : '—'}">spec</td>
+      <td th:text="${a.status}">PENDING</td>
+      <td th:text="${a.assignmentFee}">0</td>
+      <td>
+        <form th:action="@{/admin/matches/{id}/assign/{aid}/remove(id=${match.idMatch}, aid=${a.id})}"
+              method="post" style="display:inline">
+          <button class="btn btn-danger btn-sm" type="submit"
+                  onclick="return confirm('Remove assignment?');">Remove</button>
+        </form>
+      </td>
+    </tr>
+    <tr th:if="${#lists.isEmpty(assignments)}">
+      <td colspan="6" class="text-center text-muted">No referees assigned yet.</td>
+    </tr>
+    </tbody>
+  </table>
+</div>
+</body>
+</html>

@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+  <meta charset="UTF-8">
+  <title>Matches</title>
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+</head>
+<body>
+<div class="container mt-4">
+  <div class="d-flex justify-content-between align-items-center mb-3">
+    <h1 class="mb-0">Matches</h1>
+    <div>
+      <a class="btn btn-secondary me-2" th:href="@{/admin/dashboard}">⬅ Back to Dashboard</a>
+      <a class="btn btn-success" th:href="@{/admin/matches/new}">➕ Add Match</a>
+    </div>
+  </div>
+
+  <div th:if="${success}" class="alert alert-success" th:text="${success}"></div>
+  <div th:if="${error}" class="alert alert-danger" th:text="${error}"></div>
+
+  <table class="table table-striped align-middle">
+    <thead>
+    <tr>
+      <th>Date</th>
+      <th>Location</th>
+      <th>Tournament</th>
+      <th>Teams</th>
+      <th>Assigned</th>
+      <th style="width:26%">Actions</th>
+    </tr>
+    </thead>
+    <tbody>
+    <tr th:each="m : ${matches}">
+      <td th:text="${#temporals.format(m.matchDate,'yyyy-MM-dd HH:mm')}">2025-01-01 12:00</td>
+      <td th:text="${m.location}">Arena</td>
+      <td th:text="${m.tournament.name}">Tournament</td>
+      <td>
+        <span th:text="${m.homeTeam}">Home</span>
+        <span th:if="${m.homeTeam} and ${m.awayTeam}"> vs </span>
+        <span th:text="${m.awayTeam}">Away</span>
+      </td>
+      <td th:text="${#lists.size(m.assignments)}">0</td>
+      <td>
+        <a class="btn btn-outline-secondary btn-sm me-1"
+           th:href="@{/admin/matches/{id}/assign(id=${m.idMatch})}">Manage referees</a>
+        <a class="btn btn-primary btn-sm me-1"
+           th:href="@{/admin/matches/{id}/edit(id=${m.idMatch})}">Edit</a>
+        <form th:action="@{/admin/matches/{id}/delete(id=${m.idMatch})}" method="post" style="display:inline">
+          <button class="btn btn-danger btn-sm" type="submit"
+                  onclick="return confirm('Delete this match?');">Delete</button>
+        </form>
+      </td>
+    </tr>
+
+    <tr th:if="${#lists.isEmpty(matches)}">
+      <td colspan="6" class="text-center text-muted">No matches yet.</td>
+    </tr>
+    </tbody>
+  </table>
+</div>
+</body>
+</html>

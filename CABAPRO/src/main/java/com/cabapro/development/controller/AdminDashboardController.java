@@ -1,32 +1,52 @@
 package com.cabapro.development.controller;
 
+import com.cabapro.development.model.Ranking;
+import com.cabapro.development.model.Referee;
+import com.cabapro.development.model.Specialty;
+import com.cabapro.development.repository.RankingRepository;
+import com.cabapro.development.repository.RefereeRepository;
+import com.cabapro.development.repository.SpecialtyRepository;
+import java.util.List;
 import org.springframework.stereotype.Controller;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.ui.Model;
-import com.cabapro.development.service.RefereeService;
-import com.cabapro.development.service.SpecialtyService;
-import com.cabapro.development.service.RankingService;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.ModelAttribute;
+import org.springframework.web.bind.annotation.RequestMapping;
 
+/**
+ * Administrator dashboard: shows referees, rankings and specialties.
+ */
 @Controller
 @RequestMapping("/admin")
 public class AdminDashboardController {
 
-    private final RefereeService refereeService;
-    private final RankingService rankingService;
-    private final SpecialtyService specialtyService;
+  private final RefereeRepository refereeRepo;
+  private final RankingRepository rankingRepo;
+  private final SpecialtyRepository specialtyRepo;
 
-    public AdminDashboardController(RefereeService refereeService, RankingService rankingService, SpecialtyService specialtyService) {
-        this.refereeService = refereeService;
-        this.rankingService = rankingService;
-        this.specialtyService = specialtyService;
-    }
+  public AdminDashboardController(RefereeRepository refereeRepo,
+                                  RankingRepository rankingRepo,
+                                  SpecialtyRepository specialtyRepo) {
+    this.refereeRepo = refereeRepo;
+    this.rankingRepo = rankingRepo;
+    this.specialtyRepo = specialtyRepo;
+  }
 
-    @GetMapping("/dashboard")
-    public String showDashboard(Model model) {
-        model.addAttribute("referees", refereeService.findAll());
-        model.addAttribute("rankings", rankingService.findAll());
-        model.addAttribute("specialties", specialtyService.findAll());
-        return "admin/dashboard";
-    }
+  @GetMapping("/dashboard")
+  public String dashboard(Model model,
+                          @ModelAttribute("success") String success,
+                          @ModelAttribute("error") String error) {
+    List<Referee> referees = refereeRepo.findAll();
+    List<Ranking> rankings = rankingRepo.findAll();
+    List<Specialty> specialties = specialtyRepo.findAll();
+
+    model.addAttribute("referees", referees);
+    model.addAttribute("rankings", rankings);
+    model.addAttribute("specialties", specialties);
+
+    if (success != null && !success.isBlank()) model.addAttribute("success", success);
+    if (error != null && !error.isBlank()) model.addAttribute("error", error);
+
+    return "admin/dashboard";
+  }
 }

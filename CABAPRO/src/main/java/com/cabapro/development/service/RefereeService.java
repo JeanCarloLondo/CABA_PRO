@@ -45,12 +45,11 @@ public class RefereeService {
     }
 
     /**
-     * Saves or updates a referee.
+     * Saves a new referee.
      *
      * @param referee referee entity
      * @return saved referee
      */
-
     public Referee save(Referee referee) {
         if (referee.getId() != null) {
             throw new IllegalArgumentException("New referee should not have an ID");
@@ -68,6 +67,13 @@ public class RefereeService {
         return refereeRepository.save(referee);
     }
 
+    /**
+     * Updates a referee.
+     *
+     * @param id      referee ID
+     * @param updated new referee data
+     * @return updated referee
+     */
     public Referee update(Long id, Referee updated) {
         Referee existing = findById(id);
 
@@ -79,6 +85,7 @@ public class RefereeService {
         existing.setEmail(updated.getEmail());
         existing.setPhoneNumber(updated.getPhoneNumber());
         existing.setRanking(updated.getRanking());
+        existing.setSpecialty(updated.getSpecialty());
 
         return refereeRepository.save(existing);
     }
@@ -93,5 +100,15 @@ public class RefereeService {
             throw new IllegalArgumentException("Referee not found with id: " + id);
         }
         refereeRepository.deleteById(id);
+    }
+
+    /**
+     * Searches referees by email.
+     *
+     * @param query search term
+     * @return list of referees that match
+     */
+    public List<Referee> searchByEmail(String query) {
+        return refereeRepository.findByEmailContainingIgnoreCase(query);
     }
 }

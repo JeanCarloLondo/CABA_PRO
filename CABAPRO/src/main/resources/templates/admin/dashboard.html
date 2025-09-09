@@ -8,86 +8,57 @@
 </head>
 
 <body>
+    <!-- Navbar -->
+    <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
+        <div class="container-fluid">
+            <a class="navbar-brand" href="#">Admin Dashboard</a>
+            <div class="collapse navbar-collapse">
+                <ul class="navbar-nav me-auto mb-2 mb-lg-0">
+                    <li class="nav-item">
+                        <a class="nav-link active" th:href="@{/admin/dashboard}">Home</a>
+                    </li>
+                    <!-- puedes agregar más menús si lo necesitas -->
+                </ul>
+            </div>
+        </div>
+    </nav>
+
     <div class="container mt-4">
-        <h1>Administrator Dashboard</h1>
+        <h1 class="mb-4">Administrator Dashboard</h1>
 
-        <!-- Tabla de árbitros -->
-        <h2>Referees</h2>
-        <table class="table table-striped">
-            <thead>
-                <tr>
-                    <th>Email</th>
-                    <th>Phone</th>
-                    <th>Ranking</th>
-                    <th>Specialty</th>
-                    <th>Actions</th>
-                </tr>
-            </thead>
-            <tbody>
-                <tr th:each="referee : ${referees}">
-                    <td th:text="${referee.email}"></td>
-                    <td th:text="${referee.phoneNumber}"></td>
-
-                    <td>
-                        <span th:if="${referee.ranking != null}" th:text="${referee.ranking.name}"></span>
-                        <span th:unless="${referee.ranking != null}">No ranking</span>
-                    </td>
-
-                    <td>
-                        <span th:if="${referee.specialty != null}" th:text="${referee.specialty.name}"></span>
-                        <span th:unless="${referee.specialty != null}">No specialty</span>
-                    </td>
-
-                    <td>
-                        <form th:action="@{/admin/referees/{id}/delete(id=${referee.id})}" method="post">
-                            <button class="btn btn-danger btn-sm">Delete</button>
-                        </form>
-                    </td>
-                </tr>
-            </tbody>
-        </table>
-
-        <!-- Formulario para crear árbitro -->
-        <h2>Add Referee</h2>
-        <form th:action="@{/admin/referees}" method="post" class="mt-3">
-
-            <div class="mb-3">
-                <label class="form-label">Email:</label>
-                <input type="email" name="email" class="form-control" required />
+        <div class="row">
+            <!-- Recuadro para Referees -->
+            <div class="col-md-4">
+                <div class="card shadow-lg">
+                    <div class="card-body text-center">
+                        <h3 class="card-title">Referees</h3>
+                        <p class="card-text">Manage referees: view, search, add, edit and delete.</p>
+                        <a th:href="@{/admin/referees}" class="btn btn-primary">Go to Referees</a>
+                    </div>
+                </div>
             </div>
 
-            <div class="mb-3">
-                <label class="form-label">Phone Number:</label>
-                <input type="text" name="phoneNumber" class="form-control" required />
+            <!-- Aquí puedes agregar más recuadros para otros módulos -->
+            <div class="col-md-4">
+                <div class="card shadow-lg">
+                    <div class="card-body text-center">
+                        <h3 class="card-title">Rankings</h3>
+                        <p class="card-text">Manage referee rankings.</p>
+                        <a th:href="@{/admin/rankings}" class="btn btn-primary">Go to Rankings</a>
+                    </div>
+                </div>
             </div>
 
-            <div class="mb-3">
-                <label class="form-label">Password (for login):</label>
-                <input type="password" name="password" class="form-control" required />
+            <div class="col-md-4">
+                <div class="card shadow-lg">
+                    <div class="card-body text-center">
+                        <h3 class="card-title">Specialties</h3>
+                        <p class="card-text">Manage referee specialties.</p>
+                        <a th:href="@{/admin/specialties}" class="btn btn-primary">Go to Specialties</a>
+                    </div>
+                </div>
             </div>
-
-            <div class="mb-3">
-                <label class="form-label">Ranking:</label>
-                <select name="rankingId" class="form-select" required>
-                    <option value="">-- Select Ranking --</option>
-                    <option th:each="r : ${rankings}" th:value="${r.id}" th:text="${r.name}">
-                    </option>
-                </select>
-            </div>
-
-       <div class="mb-3">
-    <label class="form-label">Specialty:</label>
-    <select name="specialtyId" class="form-select" required>
-        <option value="">-- Select Specialty --</option>
-        <option th:each="s : ${specialties}"
-                th:value="${s.idSpecialty}"
-                th:text="${s.name}">
-        </option>
-    </select>
-</div>
-
-            <button type="submit" class="btn btn-success">Save Referee</button>
-        </form>
+        </div>
     </div>
 </body>
 

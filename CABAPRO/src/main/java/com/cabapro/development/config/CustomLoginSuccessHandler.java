@@ -37,7 +37,7 @@ public class CustomLoginSuccessHandler implements AuthenticationSuccessHandler {
         String redirectUrl = "/";
 
         if (authorities.stream().anyMatch(a -> a.getAuthority().equals("ROLE_ADMIN"))) {
-            redirectUrl = "/admin";
+            redirectUrl = "/admin/dashboard";
         } else if (authorities.stream().anyMatch(a -> a.getAuthority().equals("ROLE_REFEREE"))) {
             String email = authentication.getName();
             var referee = refereeRepository.findByEmail(email)

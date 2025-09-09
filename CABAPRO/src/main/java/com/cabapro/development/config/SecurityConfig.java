@@ -50,7 +50,7 @@ public class SecurityConfig {
             CustomLoginSuccessHandler successHandler) throws Exception {
         http
                 .authorizeHttpRequests(auth -> auth
-                        .requestMatchers("/login", "/css/**", "/js/**", "/images/**", "/h2-console/**", "/register").permitAll()
+                        .requestMatchers("/login", "/css/**", "/js/**", "/images/**", "/h2-console/**", "/register", "/admin/users/create").permitAll()
                         .requestMatchers("/admin/**").hasRole("ADMIN")
                         .requestMatchers("/referees/**").hasRole("REFEREE")
                         .anyRequest().authenticated())

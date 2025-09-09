@@ -20,17 +20,17 @@ public class UserAdminController {
     }
 
     @PostMapping("/users/create")
-    public String createReferee(@RequestParam("name") String name,
+    public String createAdmin(@RequestParam("name") String name,
             @RequestParam("email") String email,
             @RequestParam("password") String password) {
 
-        CustomUser referee = new CustomUser();
-        referee.setName(name);
-        referee.setEmail(email);
-        referee.setPassword(passwordEncoder.encode(password));
-        referee.setRole("REFEREE"); // Set role to REFEREE
+        CustomUser admin = new CustomUser();
+        admin.setName(name);
+        admin.setEmail(email);
+        admin.setPassword(passwordEncoder.encode(password));
+        admin.setRole("ADMIN"); // Set role to ADMIN
 
-        userRepository.save(referee);
+        userRepository.save(admin);
 
         return "redirect:/admin/dashboard";
     }

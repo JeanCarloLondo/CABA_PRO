@@ -1,75 +1,97 @@
 <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org">
-
 <head>
-    <meta charset="UTF-8">
-    <title>Admin Dashboard</title>
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+  <meta charset="UTF-8">
+  <title>Admin Dashboard</title>
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+  <style>
+    .card-tile{ box-shadow: 0 10px 35px rgba(0,0,0,.08); border-radius: 16px; }
+  </style>
 </head>
-
 <body>
-    <!-- Navbar -->
-    <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
-        <div class="container-fluid">
-            <a class="navbar-brand" href="#">Admin Dashboard</a>
-            <div class="collapse navbar-collapse">
-                <ul class="navbar-nav me-auto mb-2 mb-lg-0">
-                    <li class="nav-item">
-                        <a class="nav-link active" th:href="@{/admin/dashboard}">Home</a>
-                    </li>
-                    <!-- puedes agregar más menús si lo necesitas -->
-                </ul>
-            </div>
+<nav class="navbar navbar-expand-lg navbar-dark bg-dark">
+  <div class="container-fluid">
+    <a class="navbar-brand" href="#">Admin Dashboard</a>
+    <div class="collapse navbar-collapse">
+      <ul class="navbar-nav me-auto mb-2 mb-lg-0">
+        <li class="nav-item"><a class="nav-link active" th:href="@{/admin/dashboard}">Home</a></li>
+      </ul>
+    </div>
+  </div>
+</nav>
+
+<div class="container mt-4">
+  <h1 class="mb-4">Administrator Dashboard</h1>
+
+  <div class="row g-4">
+    <!-- Referees -->
+    <div class="col-md-3">
+      <div class="card card-tile">
+        <div class="card-body text-center">
+          <h3 class="card-title">Referees</h3>
+          <p class="card-text">Manage referees: view, search, add, edit and delete.</p>
+          <a th:href="@{/admin/referees}" class="btn btn-primary">Go to Referees</a>
         </div>
-    </nav>
+      </div>
+    </div>
 
-    <div class="container mt-4">
-        <h1 class="mb-4">Administrator Dashboard</h1>
+    <!-- Rankings -->
+    <div class="col-md-3">
+      <div class="card card-tile">
+        <div class="card-body text-center">
+          <h3 class="card-title">Rankings</h3>
+          <p class="card-text">Manage referee rankings.</p>
+          <a th:href="@{/admin/rankings}" class="btn btn-primary">Go to Rankings</a>
+        </div>
+      </div>
+    </div>
 
-        <div class="row">
-            <!-- Recuadro para Referees -->
-            <div class="col-md-4">
-                <div class="card shadow-lg">
-                    <div class="card-body text-center">
-                        <h3 class="card-title">Referees</h3>
-                        <p class="card-text">Manage referees: view, search, add, edit and delete.</p>
-                        <a th:href="@{/admin/referees}" class="btn btn-primary">Go to Referees</a>
-                    </div>
-                </div>
-            </div>
+    <!-- Specialties -->
+    <div class="col-md-3">
+      <div class="card card-tile">
+        <div class="card-body text-center">
+          <h3 class="card-title">Specialties</h3>
+          <p class="card-text">Manage referee specialties.</p>
+          <a th:href="@{/admin/specialties}" class="btn btn-primary">Go to Specialties</a>
+        </div>
+      </div>
+    </div>
 
-            <!-- Aquí puedes agregar más recuadros para otros módulos -->
-            <div class="col-md-4">
-                <div class="card shadow-lg">
-                    <div class="card-body text-center">
-                        <h3 class="card-title">Rankings</h3>
-                        <p class="card-text">Manage referee rankings.</p>
-                        <a th:href="@{/admin/rankings}" class="btn btn-primary">Go to Rankings</a>
-                    </div>
-                </div>
-            </div>
+    <!-- Matches -->
+    <div class="col-md-3">
+      <div class="card card-tile">
+        <div class="card-body text-center">
+          <h3 class="card-title">Matches</h3>
+          <p class="card-text">Create, assign referees, edit and delete matches.</p>
+          <a th:href="@{/admin/matches}" class="btn btn-primary">Go to Matches</a>
+        </div>
+      </div>
+    </div>
 
-            <div class="col-md-4">
-                <div class="card shadow-lg">
-                    <div class="card-body text-center">
-                        <h3 class="card-title">Specialties</h3>
-                        <p class="card-text">Manage referee specialties.</p>
-                        <a th:href="@{/admin/specialty}" class="btn btn-primary">Go to Specialties</a>
-                    </div>
-                </div>
-            </div>
+    <!-- Statistics -->
+    <div class="col-md-3">
+      <div class="card card-tile">
+        <div class="card-body text-center">
+          <h3 class="card-title">Statistics</h3>
+          <p class="card-text">KPIs, top referees, and active tournaments.</p>
+          <a th:href="@{/admin/statistics}" class="btn btn-outline-primary">View Statistics</a>
+        </div>
+      </div>
+    </div>
 
-            <div class="col-md-4">
-                <div class="card shadow-lg">
-                    <div class="card-body text-center">
-                    <h3 class="card-title">Matches</h3>
-                    <p class="card-text">Create, edit, delete and assign referees to matches.</p>
-                    <a th:href="@{/admin/matches}" class="btn btn-primary">Go to Matches</a>
-                </div>
-            </div>
+    <!-- Tournaments -->
+    <div class="col-md-4">
+    <div class="card shadow-lg">
+        <div class="card-body text-center">
+        <h3 class="card-title">Tournaments</h3>
+        <p class="card-text">Create, edit, assign referees, and delete tournaments.</p>
+        <a th:href="@{/admin/tournaments}" class="btn btn-primary">Go to Tournaments</a>
         </div>
     </div>
+    </div>
+
+
+  </div>
 </div>
 </body>
-
 </html>

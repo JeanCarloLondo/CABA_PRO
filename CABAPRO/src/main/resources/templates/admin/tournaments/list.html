@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+  <meta charset="UTF-8" />
+  <title>Tournaments</title>
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet" />
+</head>
+<body>
+<div class="container mt-4">
+  <div class="d-flex justify-content-between align-items-center mb-3">
+    <h1 class="mb-0">Tournaments</h1>
+    <div>
+      <a class="btn btn-secondary me-2" th:href="@{/admin/dashboard}">⬅ Back to Dashboard</a>
+      <a class="btn btn-success" th:href="@{/admin/tournaments/new}">➕ Add Tournament</a>
+    </div>
+  </div>
+
+  <div th:if="${success}" class="alert alert-success" th:text="${success}"></div>
+  <div th:if="${error}" class="alert alert-danger" th:text="${error}"></div>
+
+  <table class="table table-striped align-middle">
+    <thead>
+    <tr>
+      <th>Name</th>
+      <th>Teams</th>
+      <th>Rounds</th>
+      <th>Referees</th>
+      <th style="width:28%">Actions</th>
+    </tr>
+    </thead>
+    <tbody>
+    <tr th:each="t : ${tournaments}">
+      <td th:text="${t.name}">name</td>
+      <td th:text="${t.teams}">teams</td>
+      <td th:text="${t.rounds}">rounds</td>
+      <td th:text="${#lists.size(t.referees)}">0</td>
+      <td>
+        <a class="btn btn-outline-secondary btn-sm me-1"
+           th:href="@{/admin/tournaments/{id}/referees(id=${t.id})}">View referees</a>
+        <a class="btn btn-primary btn-sm me-1"
+           th:href="@{/admin/tournaments/{id}/edit(id=${t.id})}">Edit</a>
+        <form th:action="@{/admin/tournaments/{id}/delete(id=${t.id})}" method="post" style="display:inline">
+          <button class="btn btn-danger btn-sm" type="submit"
+                  onclick="return confirm('Delete this tournament?');">Delete</button>
+        </form>
+      </td>
+    </tr>
+    <tr th:if="${#lists.isEmpty(tournaments)}">
+      <td colspan="5" class="text-center text-muted">No tournaments found.</td>
+    </tr>
+    </tbody>
+  </table>
+</div>
+</body>
+</html>

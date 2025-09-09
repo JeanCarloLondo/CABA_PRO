@@ -1,0 +1,101 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+  <meta charset="UTF-8">
+  <title>Statistics</title>
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+  <style>
+    .kpi-card { border: 1px solid #e9ecef; border-radius: 14px; padding: 18px; box-shadow: 0 6px 22px rgba(0,0,0,.06); }
+    .kpi-value { font-size: 2rem; font-weight: 700; }
+    .kpi-sub { color:#6c757d; }
+    .section-title{ font-weight:700; margin-bottom:.75rem; }
+  </style>
+</head>
+<body>
+<nav class="navbar navbar-expand-lg navbar-dark bg-dark">
+  <div class="container-fluid">
+    <a class="navbar-brand" th:href="@{/admin/dashboard}">Admin</a>
+    <div class="collapse navbar-collapse">
+      <ul class="navbar-nav me-auto mb-2 mb-lg-0">
+        <li class="nav-item"><a class="nav-link" th:href="@{/admin/dashboard}">Dashboard</a></li>
+        <li class="nav-item"><a class="nav-link active" th:href="@{/admin/statistics}">Statistics</a></li>
+      </ul>
+    </div>
+  </div>
+</nav>
+
+<div class="container mt-4">
+
+  <div class="d-flex justify-content-between align-items-center mb-3">
+    <h1 class="mb-0">Statistics</h1>
+    <a class="btn btn-secondary" th:href="@{/admin/dashboard}">⬅ Back</a>
+  </div>
+
+  <!-- KPIs -->
+  <div class="row g-3 mb-4">
+    <div class="col-md-4">
+      <div class="kpi-card">
+        <div class="kpi-sub">Scheduled matches</div>
+        <div class="kpi-value" th:text="${scheduledCount}">0</div>
+      </div>
+    </div>
+    <div class="col-md-4">
+      <div class="kpi-card">
+        <div class="kpi-sub">Completed matches</div>
+        <div class="kpi-value" th:text="${completedCount}">0</div>
+      </div>
+    </div>
+    <div class="col-md-4">
+      <div class="kpi-card">
+        <div class="kpi-sub">Active tournaments</div>
+        <div class="kpi-value" th:text="${#lists.size(activeTournaments)}">0</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Top referees this month -->
+  <div class="row mb-4">
+    <div class="col-12">
+      <div class="kpi-card">
+        <div class="d-flex justify-content-between align-items-center">
+          <div class="section-title">Top 5 referees this month</div>
+        </div>
+        <div class="table-responsive">
+          <table class="table align-middle mb-0">
+            <thead>
+            <tr>
+              <th>Email</th>
+              <th class="text-end">Assignments</th>
+            </tr>
+            </thead>
+            <tbody>
+            <tr th:each="r : ${topReferees}">
+              <td th:text="${r.email}">email</td>
+              <td class="text-end" th:text="${r.assignments}">0</td>
+            </tr>
+            <tr th:if="${#lists.isEmpty(topReferees)}">
+              <td colspan="2" class="text-muted">No data for the current month.</td>
+            </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Active tournaments list -->
+  <div class="row mb-4">
+    <div class="col-12">
+      <div class="kpi-card">
+        <div class="section-title">Active tournaments</div>
+        <ul class="mb-0">
+          <li th:each="t : ${activeTournaments}" th:text="${t.name}">Tournament</li>
+          <li th:if="${#lists.isEmpty(activeTournaments)}" class="text-muted">No active tournaments.</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+
+</div>
+</body>
+</html>

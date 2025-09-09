@@ -1,16 +1,7 @@
-/**
- * Entity representing a Tournament of the system.
- *
- * Author: Alejandro Garcés Ramírez
- * Date: 2025-09-03
- * Role: Domain entity - Tournament
- */
-
 package com.cabapro.development.model;
 
 import jakarta.persistence.*;
-import java.util.ArrayList;
-import java.util.List;
+import java.util.*;
 
 @Entity
 @Table(name = "tournaments")
@@ -32,11 +23,21 @@ public class Tournament {
     @OneToMany(mappedBy = "tournament", cascade = CascadeType.ALL, orphanRemoval = false)
     private List<Match> matches = new ArrayList<>();
 
+    // NEW: árbitros asociados al torneo (solo dueño el lado Tournament)
+    @ManyToMany
+    @JoinTable(
+        name = "tournament_referees",
+        joinColumns = @JoinColumn(name = "tournament_id"),
+        inverseJoinColumns = @JoinColumn(name = "referee_id")
+    )
+    private Set<Referee> referees = new HashSet<>();
+
     // --- domain helper ---
     public List<String> showRounds() {
         if (rounds == null || rounds.isBlank()) return List.of();
         return List.of(rounds.split("\\s*,\\s*"));
     }
+    public int refereeCount() { return referees == null ? 0 : referees.size(); }
 
     // --- getters/setters ---
     public Long getId() { return id; }
@@ -53,4 +54,7 @@ public class Tournament {
 
     public List<Match> getMatches() { return matches; }
     public void setMatches(List<Match> matches) { this.matches = matches; }
+
+    public Set<Referee> getReferees() { return referees; }
+    public void setReferees(Set<Referee> referees) { this.referees = referees; }
 }

@@ -13,10 +13,10 @@ import org.springframework.web.bind.annotation.GetMapping;
 @Controller
 public class HomeController {
 
-    // Home page -> redirect to register
+    // Home page -> redirect to LOGIN
     @GetMapping("/")
     public String index() {
-        return "redirect:/user/register";
+        return "redirect:/login";
     }
 
     // Login page

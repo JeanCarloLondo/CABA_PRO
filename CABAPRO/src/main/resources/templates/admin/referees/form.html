@@ -29,10 +29,15 @@
         <label>Ranking:</label>
         <select name="rankingId" required>
             <option value="">-- Select Ranking --</option>
-            <option th:each="r : ${rankings}" 
-                    th:value="${r.id}" 
-                    th:text="${r.name}"
-                    th:selected="${referee.ranking != null and referee.ranking.id == r.id}">
+            <option th:each="r : ${rankings}" th:value="${r.id}" th:text="${r.name}"
+                th:selected="${referee.ranking != null and referee.ranking.id == r.id}">
+            </option>
+        </select>
+
+        <label>Specialty:</label>
+        <select name="specialtyId">
+            <option th:each="s : ${specialties}" th:value="${s.idSpecialty}" th:text="${s.name}"
+                th:selected="${referee.specialty != null and referee.specialty.idSpecialty == s.idSpecialty}">
             </option>
         </select>
         <br />

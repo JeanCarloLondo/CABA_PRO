@@ -71,6 +71,14 @@ public class Referee {
         this.ranking = ranking;
     }
 
+    public Specialty getSpecialty() {
+        return specialty;
+    }
+
+    public void setSpecialty(Specialty specialty) {
+        this.specialty = specialty;
+    }
+
     public void setEmail(String email) {
         this.email = email;
     }

@@ -32,7 +32,7 @@ public class CustomUser {
     @Size(min = 6, max = 100)
     private String password;
 
-    @NotBlank
+    
     private String role; // Ej: "ADMIN", "REFEREE"
 
     // --- Relation ---

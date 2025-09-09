@@ -15,9 +15,14 @@ INSERT INTO ranking (id, name, fee, description)
 VALUES (3, 'Local', 50.0, 'Local league referees');
 
 -- Insert sample referees (each linked to a ranking)
-INSERT INTO referee (id, email, ranking_id, phone_number) VALUES (1, 'fiba.ref@cabapro.com', 1, '123-456-7890');
-INSERT INTO referee (id, email, ranking_id, phone_number) VALUES (2, 'nat.ref@cabapro.com', 2, '234-567-8901');
-INSERT INTO referee (id, email, ranking_id, phone_number) VALUES (3, 'loc.ref@cabapro.com', 3, '345-678-9012');
+INSERT INTO referee (email, ranking_id, phone_number)
+VALUES ('fiba.ref@cabapro.com', 1, '123-456-7890');
+
+INSERT INTO referee (email, ranking_id, phone_number)
+VALUES ('nat.ref@cabapro.com', 2, '234-567-8901');
+
+INSERT INTO referee (email, ranking_id, phone_number)
+VALUES ('loc.ref@cabapro.com', 3, '345-678-9012');
 
 -- Insert sample admin
 INSERT INTO admins (id, email, name)
@@ -30,3 +35,9 @@ VALUES (1, 'Lions', 'Tigers', '2025-09-15 18:00:00', 'Central Court');
 INSERT INTO assignments 
 (referee_id, match_id, admin_id, ranking_id, status, assigned_at, assignment_fee) 
 VALUES (1, 1, 1, 1, 'PENDING', NOW(), 100.00);
+
+INSERT INTO specialties (name, description) VALUES
+('Court Referee', 'Referee in charge of officiating on the court, making calls during live play.'),
+('Table Official', 'Responsible for managing the game clock, scoreboard, and statistics from the table.'),
+('Technical Commissioner', 'Ensures compliance with league regulations and supervises referee performance.'),
+('Instant Replay Operator', 'Specialist handling video review system for disputed plays.');

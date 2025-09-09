@@ -6,8 +6,9 @@
 </head>
 <body class="container mt-5">
     <h2>Specialty Info</h2>
-    <p><strong>Name:</strong> <span th:text="${specialty.name}"></span></p>
-    <p><strong>Description:</strong> <span th:text="${specialty.description}"></span></p>
+<p><strong>Name:</strong> <span th:text="${specialty.name}"></span></p>
+<p><strong>Description:</strong> <span th:text="${specialty.description}"></span></p>
+<a th:href="@{/specialties}" class="btn btn-secondary">⬅ Back</a>
 
     <a th:href="@{/specialties}" class="btn btn-secondary">⬅ Back</a>
 </body>

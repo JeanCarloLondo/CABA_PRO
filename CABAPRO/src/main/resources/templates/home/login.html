@@ -1,26 +1,66 @@
 <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org">
 <head>
-    <title>Login - Referee System</title>
+    <title>Login - CABA Pro System</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
-    <link rel="stylesheet" href="/css/login.css">
+    <style>
+        body {
+            background-color: #f8f9fa;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            margin: 0;
+        }
+        .login-container {
+            background-color: white;
+            padding: 2rem;
+            border-radius: 10px;
+            box-shadow: 0 0 15px rgba(0, 0, 0, 0.1);
+            width: 100%;
+            max-width: 400px;
+        }
+        .admin-section {
+            margin-top: 1.5rem;
+            padding-top: 1.5rem;
+            border-top: 1px solid #dee2e6;
+            text-align: center;
+        }
+    </style>
 </head>
 <body>
     <div class="login-container">
-        <h2 class="text-center mb-4">🏀 Referee System Login</h2>
+        <h2 class="text-center mb-4">🏀 CABA Pro System</h2>
+        
+        <!-- Show success/error messages -->
+        <div th:if="${param.registered}" class="alert alert-success" role="alert">
+            Registration successful! You can now log in.
+        </div>
+        <div th:if="${param.error}" class="alert alert-danger" role="alert">
+            Login error. Please check your credentials.
+        </div>
+        <div th:if="${param.logout}" class="alert alert-info" role="alert">
+            You have logged out successfully.
+        </div>
 
-        <!-- Formulario de Spring Security -->
+        <!-- Spring Security Login Form -->
         <form th:action="@{/login}" method="post">
             <div class="mb-3">
-                <label class="form-label">User</label>
+                <label class="form-label">Username</label>
                 <input type="text" name="username" class="form-control" required>
             </div>
             <div class="mb-3">
                 <label class="form-label">Password</label>
                 <input type="password" name="password" class="form-control" required>
             </div>
-            <button type="submit" class="btn btn-warning w-100">Login</button>
+            <button type="submit" class="btn btn-primary w-100">Log In</button>
         </form>
+
+        <!-- Admin section -->
+        <div class="admin-section">
+            <p class="mb-2">Are you an administrator and need to register?</p>
+            <a th:href="@{/admin/users/create}" class="btn btn-outline-primary btn-sm">Click here to register</a>
+        </div>
     </div>
 </body>
 </html>

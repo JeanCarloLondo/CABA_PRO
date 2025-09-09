@@ -3,46 +3,64 @@
 <head>
     <meta charset="UTF-8">
     <title>Referee Dashboard</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
 </head>
-<body>
-    <h1>Referee Dashboard</h1>
+<body class="container mt-5">
 
-    <div>
-        <h2>My Profile</h2>
-        <p><strong>Email:</strong> <span th:text="${referee.email}"></span></p>
-        <p><strong>Phone Number:</strong> <span th:text="${referee.phoneNumber}"></span></p>
-        <p><strong>Ranking:</strong> <span th:text="${referee.ranking.name}"></span></p>
+    <h1 class="mb-4">Referee Dashboard</h1>
+
+    <!-- Perfil del árbitro -->
+    <div class="card mb-4">
+        <div class="card-header bg-primary text-white">
+            My Profile
+        </div>
+        <div class="card-body">
+            <p><strong>Email:</strong> <span th:text="${referee.email}"></span></p>
+            <p><strong>Phone Number:</strong> <span th:text="${referee.phoneNumber}"></span></p>
+            <p><strong>Ranking:</strong> <span th:text="${referee.ranking.name}"></span></p>
+            <p><strong>Specialty:</strong> <span th:text="${referee.specialty.name}"></span></p>
+        </div>
     </div>
 
-    <div>
-        <h2>My Assignments</h2>
-        <table border="1">
-            <tr>
-                <th>Match</th>
-                <th>Date</th>
-                <th>Location</th>
-                <th>Status</th>
-                <th>Actions</th>
-            </tr>
-            <tr th:each="a : ${assignments}">
-                <td th:text="${a.match.homeTeam} + ' vs ' + ${a.match.awayTeam}"></td>
-                <td th:text="${a.match.matchDate}"></td>
-                <td th:text="${a.match.location}"></td>
-                <td th:text="${a.status}"></td>
-                <td>
-                    <form th:if="${a.status.name() == 'PENDING'}"
-                          th:action="@{/referee/dashboard/{refId}/assignments/{aId}/accept(refId=${referee.id}, aId=${a.id})}"
-                          method="post" style="display:inline;">
-                        <button type="submit">Accept</button>
-                    </form>
-                    <form th:if="${a.status.name() == 'PENDING'}"
-                          th:action="@{/referee/dashboard/{refId}/assignments/{aId}/reject(refId=${referee.id}, aId=${a.id})}"
-                          method="post" style="display:inline;">
-                        <button type="submit">Reject</button>
-                    </form>
-                </td>
-            </tr>
-        </table>
+    <!-- Asignaciones -->
+    <div class="card">
+        <div class="card-header bg-secondary text-white">
+            My Assignments
+        </div>
+        <div class="card-body">
+            <table class="table table-striped">
+                <thead>
+                    <tr>
+                        <th>Match</th>
+                        <th>Date</th>
+                        <th>Location</th>
+                        <th>Status</th>
+                        <th>Actions</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr th:each="a : ${assignments}">
+                       <td th:text="${a.match.homeTeam + ' vs ' + a.match.awayTeam}"></td>
+                        <td th:text="${#temporals.format(a.match.matchDate, 'yyyy-MM-dd HH:mm')}"></td>
+                        <td th:text="${a.match.location}"></td>
+                        <td th:text="${a.status}"></td>
+                        <td>
+                            <!-- Botones de acción solo si está pendiente -->
+                            <form th:if="${a.status.name() == 'PENDING'}"
+                                  th:action="@{/referee/dashboard/{refId}/assignments/{aId}/accept(refId=${referee.id}, aId=${a.id})}"
+                                  method="post" style="display:inline;">
+                                <button type="submit" class="btn btn-success btn-sm">Accept</button>
+                            </form>
+                            <form th:if="${a.status.name() == 'PENDING'}"
+                                  th:action="@{/referee/dashboard/{refId}/assignments/{aId}/reject(refId=${referee.id}, aId=${a.id})}"
+                                  method="post" style="display:inline;">
+                                <button type="submit" class="btn btn-danger btn-sm">Reject</button>
+                            </form>
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
     </div>
 
 </body>

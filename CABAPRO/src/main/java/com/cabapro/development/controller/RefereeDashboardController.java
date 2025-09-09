@@ -13,7 +13,6 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 
-
 @Controller
 public class RefereeDashboardController {
 
@@ -59,5 +58,17 @@ public class RefereeDashboardController {
             @PathVariable Long aId) {
         assignmentService.updateStatus(aId, AssignmentStatus.REJECTED);
         return "redirect:/referee/dashboard/" + refId;
+    }
+
+    @PostMapping("/referee/dashboard/{id}/update")
+    public String updateProfile(@PathVariable Long id,
+            String email,
+            String phoneNumber) {
+        Referee referee = refereeRepo.findById(id)
+                .orElseThrow(() -> new IllegalArgumentException("Referee not found: " + id));
+        referee.setEmail(email);
+        referee.setPhoneNumber(phoneNumber);
+        refereeRepo.save(referee);
+        return "redirect:/referee/dashboard/" + id;
     }
 }

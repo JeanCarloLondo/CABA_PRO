@@ -20,10 +20,14 @@ public class Tournament {
     @Column(length = 255)
     private String rounds;
 
+    // NEW: base fee configurable por torneo (override al fee del ranking si se define)
+    @Column(name = "base_fee", nullable = false)
+    private double baseFee = 0.0;
+
     @OneToMany(mappedBy = "tournament", cascade = CascadeType.ALL, orphanRemoval = false)
     private List<Match> matches = new ArrayList<>();
 
-    // NEW: árbitros asociados al torneo (solo dueño el lado Tournament)
+    // Árbitros asociados al torneo (para restringir asignaciones)
     @ManyToMany
     @JoinTable(
         name = "tournament_referees",
@@ -32,11 +36,12 @@ public class Tournament {
     )
     private Set<Referee> referees = new HashSet<>();
 
-    // --- domain helper ---
+    // --- domain helpers ---
     public List<String> showRounds() {
         if (rounds == null || rounds.isBlank()) return List.of();
         return List.of(rounds.split("\\s*,\\s*"));
     }
+
     public int refereeCount() { return referees == null ? 0 : referees.size(); }
 
     // --- getters/setters ---
@@ -51,6 +56,9 @@ public class Tournament {
 
     public String getRounds() { return rounds; }
     public void setRounds(String rounds) { this.rounds = rounds; }
+
+    public Double getBaseFee() { return baseFee; }
+    public void setBaseFee(Double baseFee) { this.baseFee = baseFee; }
 
     public List<Match> getMatches() { return matches; }
     public void setMatches(List<Match> matches) { this.matches = matches; }

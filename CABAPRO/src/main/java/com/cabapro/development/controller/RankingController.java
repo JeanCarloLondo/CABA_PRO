@@ -13,7 +13,7 @@ import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 public class RankingController {
 
     private final RankingService rankingService;
-    private final RefereeService refereeService; // ⬅️ nuevo
+    private final RefereeService refereeService;
 
     public RankingController(RankingService rankingService,
                              RefereeService refereeService) {
@@ -21,6 +21,7 @@ public class RankingController {
         this.refereeService = refereeService;
     }
 
+    // ---------- LIST ----------
     @GetMapping
     public String list(Model model,
                        @ModelAttribute("success") String success,
@@ -31,6 +32,7 @@ public class RankingController {
         return "admin/rankings/list";
     }
 
+    // ---------- CREATE ----------
     @GetMapping("/new")
     public String createForm(Model model) {
         if (!model.containsAttribute("ranking")) {
@@ -42,6 +44,7 @@ public class RankingController {
     @PostMapping
     public String create(@ModelAttribute Ranking ranking, RedirectAttributes ra) {
         try {
+            validateRanking(ranking);
             rankingService.create(ranking);
             ra.addFlashAttribute("success", "Ranking created successfully.");
             return "redirect:/admin/rankings";
@@ -52,6 +55,7 @@ public class RankingController {
         }
     }
 
+    // ---------- EDIT ----------
     @GetMapping("/{id}/edit")
     public String editForm(@PathVariable Long id, Model model, RedirectAttributes ra) {
         try {
@@ -70,6 +74,7 @@ public class RankingController {
                          @ModelAttribute Ranking ranking,
                          RedirectAttributes ra) {
         try {
+            validateRanking(ranking);
             rankingService.update(id, ranking);
             ra.addFlashAttribute("success", "Ranking updated successfully.");
             return "redirect:/admin/rankings";
@@ -80,6 +85,7 @@ public class RankingController {
         }
     }
 
+    // ---------- DELETE ----------
     @PostMapping("/{id}/delete")
     public String delete(@PathVariable Long id, RedirectAttributes ra) {
         try {
@@ -93,7 +99,7 @@ public class RankingController {
         return "redirect:/admin/rankings";
     }
 
-    
+    // ---------- REFEREES BY RANKING ----------
     @GetMapping("/{id}/referees")
     public String refereesByRanking(@PathVariable Long id, Model model, RedirectAttributes ra) {
         try {
@@ -104,6 +110,21 @@ public class RankingController {
         } catch (IllegalArgumentException e) {
             ra.addFlashAttribute("error", e.getMessage());
             return "redirect:/admin/rankings";
+        }
+    }
+
+    // ---------- Helpers ----------
+    private void validateRanking(Ranking r) {
+        if (r.getName() == null || r.getName().isBlank()) {
+            throw new IllegalArgumentException("Name is required.");
+        }
+        // Nota: en tu entidad 'fee' es double (primitivo). Si el input viene vacío, Spring pone 0.0.
+        // Exigimos >= 0, puedes cambiar a > 0 si lo quieres obligatorio > 0.
+        if (r.getFee() < 0) {
+            throw new IllegalArgumentException("Fee must be a non-negative value.");
+        }
+        if (r.getDescription() == null || r.getDescription().isBlank()) {
+            throw new IllegalArgumentException("Description is required.");
         }
     }
 }

@@ -10,7 +10,7 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 @Controller
-@RequestMapping("/admin/specialty")
+@RequestMapping({"/admin/specialty", "/admin/specialties"}) // ⬅️ alias singular + plural
 public class SpecialtyController {
 
     private final SpecialtyService specialtyService;
@@ -27,16 +27,18 @@ public class SpecialtyController {
     public String list(Model model,
                        @ModelAttribute("success") String success,
                        @ModelAttribute("error") String error) {
-        model.addAttribute("specialty", specialtyService.findAll());
+        model.addAttribute("specialties", specialtyService.findAll()); // ⬅️ nombre en plural
         if (success != null && !success.isBlank()) model.addAttribute("success", success);
         if (error != null && !error.isBlank()) model.addAttribute("error", error);
-        return "admin/specialty/list";
+        return "admin/specialty/list"; // ⬅️ usamos tus vistas existentes (carpeta singular)
     }
 
     // CREATE FORM
     @GetMapping("/new")
     public String createForm(Model model) {
-        if (!model.containsAttribute("specialty")) model.addAttribute("specialty", new Specialty());
+        if (!model.containsAttribute("specialty")) {
+            model.addAttribute("specialty", new Specialty());
+        }
         return "admin/specialty/form";
     }
 
@@ -46,20 +48,21 @@ public class SpecialtyController {
         try {
             specialtyService.create(specialty);
             ra.addFlashAttribute("success", "Specialty created successfully.");
-            return "redirect:/admin/specialty";
         } catch (IllegalArgumentException e) {
             ra.addFlashAttribute("error", e.getMessage());
             ra.addFlashAttribute("specialty", specialty);
             return "redirect:/admin/specialty/new";
         }
+        return "redirect:/admin/specialty"; // ⬅️ redirigimos a la versión canónica
     }
 
     // EDIT FORM
     @GetMapping("/{id}/edit")
     public String editForm(@PathVariable Long id, Model model, RedirectAttributes ra) {
         try {
-            if (!model.containsAttribute("specialty"))
+            if (!model.containsAttribute("specialty")) {
                 model.addAttribute("specialty", specialtyService.findById(id));
+            }
             return "admin/specialty/form";
         } catch (IllegalArgumentException e) {
             ra.addFlashAttribute("error", e.getMessage());
@@ -89,9 +92,7 @@ public class SpecialtyController {
         try {
             specialtyService.deleteById(id);
             ra.addFlashAttribute("success", "Specialty deleted.");
-        } catch (IllegalStateException e) {
-            ra.addFlashAttribute("error", e.getMessage());
-        } catch (IllegalArgumentException e) {
+        } catch (IllegalStateException | IllegalArgumentException e) {
             ra.addFlashAttribute("error", e.getMessage());
         }
         return "redirect:/admin/specialty";
@@ -105,7 +106,6 @@ public class SpecialtyController {
             Specialty sp = specialtyService.findById(id);
             model.addAttribute("specialty", sp);
             model.addAttribute("referees", refereeService.findBySpecialty(id));
-            // Para asignar rápido: lista de árbitros sin specialty
             model.addAttribute("availableReferees", refereeService.findWithoutSpecialty());
             return "admin/specialty/referees";
         } catch (IllegalArgumentException e) {

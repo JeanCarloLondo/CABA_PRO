@@ -61,8 +61,9 @@ MERGE INTO admins (email, name) KEY(email)
 VALUES ('admin@cabapro.com', 'Main Admin');
 
 -- ---------- Tournament ----------
-MERGE INTO tournaments (name, teams, rounds) KEY(name)
-VALUES ('CABA Cup', 'Lions,Tigers', 'Group Stage,Final');
+-- Tournaments (H2 MERGE/UPSERT) - incluye base_fee para cumplir NOT NULL
+MERGE INTO tournaments (name, teams, rounds, base_fee) KEY(name)
+VALUES ('CABA Cup', 'Lions,Tigers', 'Group Stage,Final', 25.00);
 
 -- ---------- Match (must include tournament_id) ----------
 -- One sample match Lions vs Tigers in the CABA Cup

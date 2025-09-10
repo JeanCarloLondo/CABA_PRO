@@ -1,55 +1,57 @@
 <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org">
 <head>
-    <meta charset="UTF-8">
-    <title>Rankings</title>
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+  <meta charset="UTF-8" />
+  <title>Rankings</title>
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet" />
 </head>
 <body>
 <div class="container mt-4">
-
-    <div class="d-flex justify-content-between align-items-center mb-3">
-        <h1 class="mb-0">Rankings</h1>
-        <div>
-            <a class="btn btn-secondary me-2" th:href="@{/admin/dashboard}"> Back to Dashboard</a>
-            <a class="btn btn-success" th:href="@{/admin/rankings/new}"> Add Ranking</a>
-        </div>
+  <div class="d-flex justify-content-between align-items-center mb-3">
+    <h1 class="mb-0">Rankings</h1>
+    <div>
+      <a class="btn btn-secondary me-2" th:href="@{/admin/dashboard}">Back to Dashboard</a>
+      <a class="btn btn-success" th:href="@{/admin/rankings/new}">➕ Add Ranking</a>
     </div>
+  </div>
 
-    <div th:if="${success}" class="alert alert-success" th:text="${success}"></div>
-    <div th:if="${error}"   class="alert alert-danger"  th:text="${error}"></div>
+  <div th:if="${success}" class="alert alert-success" th:text="${success}"></div>
+  <div th:if="${error}" class="alert alert-danger" th:text="${error}"></div>
 
-    <table class="table table-striped align-middle">
-        <thead>
-        <tr>
-            <th style="width: 25%">Name</th>
-            <th style="width: 55%">Description</th>
-            <th style="width: 20%">Actions</th>
-        </tr>
-        </thead>
-        <tbody>
-        <tr th:each="r : ${rankings}">
-            <td th:text="${r.name}">Name</td>
-            <td th:text="${r.description}">Description</td>
-            <td>
-                <a class="btn btn-outline-secondary btn-sm me-1"
-                   th:href="@{/admin/rankings/{id}/referees(id=${r.id})}">View referees</a>
-                <a class="btn btn-primary btn-sm me-1"
-                   th:href="@{/admin/rankings/{id}/edit(id=${r.id})}">Edit</a>
-                <form th:action="@{/admin/rankings/{id}/delete(id=${r.id})}"
-                      method="post" style="display:inline">
-                    <button class="btn btn-danger btn-sm" type="submit"
-                            onclick="return confirm('Delete this ranking? It cannot be in use by referees.');">
-                        Delete
-                    </button>
-                </form>
-            </td>
-        </tr>
-        <tr th:if="${#lists.isEmpty(rankings)}">
-            <td colspan="3" class="text-center text-muted">No rankings found.</td>
-        </tr>
-        </tbody>
-    </table>
+  <table class="table table-hover align-middle">
+    <thead>
+      <tr>
+        <th style="width: 22%">Name</th>
+        <th>Description</th>
+        <th style="width: 12%">Fee</th>
+        <th style="width: 22%">Actions</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr th:each="r : ${rankings}">
+        <td th:text="${r.name}">name</td>
+        <td th:text="${r.description}">desc</td>
+        <td>
+          <span th:text="${#numbers.formatDecimal(r.fee, 1, 'COMMA', 2, 'POINT')}">0.00</span>
+        </td>
+        <td>
+          <a class="btn btn-outline-secondary btn-sm me-2"
+             th:href="@{/admin/rankings/{id}/referees(id=${r.id})}">View referees</a>
+          <a class="btn btn-primary btn-sm me-2"
+             th:href="@{/admin/rankings/{id}/edit(id=${r.id})}">Edit</a>
+          <form th:action="@{/admin/rankings/{id}/delete(id=${r.id})}" method="post" style="display:inline">
+            <button class="btn btn-danger btn-sm" type="submit"
+                    onclick="return confirm('Delete this ranking? It cannot be in use by referees.');">
+              Delete
+            </button>
+          </form>
+        </td>
+      </tr>
+      <tr th:if="${#lists.isEmpty(rankings)}">
+        <td colspan="4" class="text-center text-muted">No rankings.</td>
+      </tr>
+    </tbody>
+  </table>
 </div>
 </body>
 </html>

@@ -18,13 +18,21 @@
         <label class="form-label">Name *</label>
         <input type="text" name="name" class="form-control" th:value="${tournament.name}" required />
       </div>
-      <div class="col-md-6">
-        <label class="form-label">Teams (comma-separated)</label>
-        <input type="text" name="teams" class="form-control" th:value="${tournament.teams}" />
+
+      <div class="col-md-3">
+        <label class="form-label">Base fee </label>
+        <input type="number" name="baseFee" class="form-control" step="0.01" min="0"
+               th:value="${tournament.baseFee}" placeholder="e.g. 120.00" />
       </div>
-      <div class="col-12">
+
+      <div class="col-md-3">
         <label class="form-label">Rounds (comma-separated)</label>
         <input type="text" name="rounds" class="form-control" th:value="${tournament.rounds}" />
+      </div>
+
+      <div class="col-12">
+        <label class="form-label">Teams (comma-separated)</label>
+        <input type="text" name="teams" class="form-control" th:value="${tournament.teams}" />
       </div>
     </div>
 

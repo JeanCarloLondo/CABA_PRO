@@ -16,15 +16,18 @@ public class MatchService {
     private final TournamentRepository tournamentRepo;
     private final AssignmentRepository assignmentRepo;
     private final RefereeRepository refereeRepo;
+    private final NotificationService notificationService;
 
     public MatchService(MatchRepository matchRepo,
                         TournamentRepository tournamentRepo,
                         AssignmentRepository assignmentRepo,
-                        RefereeRepository refereeRepo) {
+                        RefereeRepository refereeRepo,
+                        NotificationService notificationService) {
         this.matchRepo = matchRepo;
         this.tournamentRepo = tournamentRepo;
         this.assignmentRepo = assignmentRepo;
         this.refereeRepo = refereeRepo;
+        this.notificationService = notificationService;
     }
 
     // ---- CRUD matches ----
@@ -84,7 +87,6 @@ public class MatchService {
 
     @Transactional
     public void delete(Long id) {
-        // gracias a orphanRemoval=true en Match.assignments, se borran primero las asignaciones
         matchRepo.deleteById(id);
     }
 
@@ -120,6 +122,8 @@ public class MatchService {
         a.setAssignmentFee(BigDecimal.valueOf(ref.getRanking().getFee())); // fee desde Ranking
 
         assignmentRepo.save(a);
+
+        notificationService.createAssignmentNotification(ref, match);
     }
 
     @Transactional

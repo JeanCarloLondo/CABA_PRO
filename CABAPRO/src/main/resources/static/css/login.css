@@ -1,40 +1,65 @@
-/* Fondo oscuro */
 body {
-    background-color: #1e1e2f;
-    color: white;
-    height: 100vh;
-    overflow: hidden;
+    background: url("../images/back.png") no-repeat center center fixed;
+    background-size: cover;
     display: flex;
     justify-content: center;
     align-items: center;
-    flex-direction: column;
+    min-height: 100vh;
+    margin: 0;
+    font-family: Arial, sans-serif;
+    font-weight: bold;
 }
 
-/* Contenedor del formulario */
+
 .login-container {
-    background: rgba(255, 255, 255, 0.1);
+    background: rgba(0, 0, 0, 0.7); /* fondo negro semitransparente */
     padding: 2rem;
-    border-radius: 15px;
-    box-shadow: 0px 0px 15px rgba(255,255,255,0.3);
-    z-index: 10;
+    border-radius: 12px;
+    box-shadow: 0 0 20px rgba(0,0,0,0.5);
+    width: 100%;
+    max-width: 400px;
+    color: white;
 }
 
-/* Balones cayendo */
-.basketball {
-    position: absolute;
-    top: -50px;
-    width: 40px;
-    height: 40px;
-    background-image: url('/images/ball.png'); /* pon tu imagen de balón aquí */
-    background-size: cover;
-    animation: fall linear infinite;
+
+.form-label {
+    color: white;
 }
 
-@keyframes fall {
-    from {
-        transform: translateY(-50px) rotate(0deg);
-    }
-    to {
-        transform: translateY(110vh) rotate(360deg);
-    }
+
+.btn-orange {
+    background-color: rgba(173, 5, 5, 0.748);
+    color: white;
+    font-weight: bold;
+    border: none;
+    border-radius: 8px;
+    padding: 10px;
+    transition: background-color 0.3s ease;
+}
+
+.btn-orange:hover {
+    background-color: rgb(216, 137, 137);
+    color: white;
+}
+
+.btn-outline-orange {
+    color: rgb(247, 251, 249);
+    border: 2px solid rgb(34, 74, 53);
+    font-weight: bold;
+    border-radius: 8px;
+    transition: all 0.3s ease;
+    padding: 6px 12px;
+}
+
+.btn-outline-orange:hover {
+    background-color: rgb(77, 160, 126);
+    color: white;
+}
+
+.admin-section {
+    margin-top: 1.5rem;
+    padding-top: 1.5rem;
+    border-top: 1px solid #444;
+    text-align: center;
+    color: #ddd;
 }

@@ -3,11 +3,12 @@
 <head>
     <meta charset="UTF-8">
     <title>Assignments</title>
+    <link rel="stylesheet" th:href="@{/css/list.css}">
 </head>
 <body>
     <h1>Assignments</h1>
 
-    <table border="1">
+    <table class="assignments-table">
         <thead>
             <tr>
                 <th>ID</th>
@@ -27,8 +28,8 @@
                 <td th:text="${a.assignedAt}"></td>
                 <td>
                     <form th:if="${a.status.name() == 'REJECTED'}"
-                          th:action="@{/admin/assignments/{id}/reassign(id=${a.id})}"
-                          method="post" style="display:inline;">
+                            th:action="@{/admin/assignments/{id}/reassign(id=${a.id})}"
+                            method="post" class="reassign-form">
                         <select name="newRefereeId" required>
                             <option value="">-- Select Referee --</option>
                             <option th:each="r : ${referees}"
@@ -36,13 +37,13 @@
                                     th:text="${r.email}">
                             </option>
                         </select>
-                        <button type="submit">Reassign</button>
+                        <button type="submit" class="btn-custom">Reassign</button>
                     </form>
                 </td>
             </tr>
         </tbody>
     </table>
 
-    <a th:href="@{/admin}">Back to Admin Panel</a>
+    <a th:href="@{/admin}" class="btn-back">Back to Admin Panel</a>
 </body>
 </html>

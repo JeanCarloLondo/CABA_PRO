@@ -1,0 +1,76 @@
+
+body {
+    font-family: Arial, sans-serif;
+    background-color: #1b2e1b; /* Verde oscuro */
+    color: white;
+    padding: 20px;
+}
+
+
+h1 {
+    text-align: center;
+    margin-bottom: 20px;
+}
+
+
+.assignments-table {
+    width: 100%;
+    border-collapse: collapse;
+    margin: 0 auto 20px auto;
+    font-size: 16px;
+    text-align: center;
+}
+
+
+.assignments-table thead {
+    background-color: #145214; /* Verde más oscuro */
+    color: white;
+}
+
+
+.assignments-table tbody tr:nth-child(odd) {
+    background-color: #66bb6a; /* Verde claro */
+    color: black;
+}
+
+.assignments-table tbody tr:nth-child(even) {
+    background-color: #388e3c; /* Verde medio */
+    color: white;
+}
+
+
+.assignments-table th, .assignments-table td {
+    padding: 12px;
+    border: 1px solid #2e7d32;
+}
+
+
+.btn-custom {
+    background-color: orange;
+    color: white;
+    border: none;
+    padding: 6px 12px;
+    border-radius: 6px;
+    cursor: pointer;
+    text-decoration: none;
+    font-weight: bold;
+}
+
+.btn-custom:hover {
+    background-color: darkorange;
+}
+
+
+.btn-back {
+    display: inline-block;
+    background-color: #007bff;
+    color: white;
+    padding: 8px 16px;
+    border-radius: 6px;
+    text-decoration: none;
+    font-weight: bold;
+}
+
+.btn-back:hover {
+    background-color: #0056b3;
+}

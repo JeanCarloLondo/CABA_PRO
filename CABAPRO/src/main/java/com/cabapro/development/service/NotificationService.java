@@ -1,7 +1,7 @@
 /**
  * Service for managing notifications in the CABAPRO system.
  *
- * Author:Alejandra Ortiz
+ * Author: Alejandra Ortiz / Claude Assistant
  * Date: 2025-09-10
  * Role: Business logic for notifications
  */
@@ -9,6 +9,7 @@ package com.cabapro.development.service;
 
 import com.cabapro.development.model.*;
 import com.cabapro.development.repository.NotificationRepository;
+import com.cabapro.development.repository.RefereeRepository;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -20,9 +21,12 @@ import java.util.List;
 public class NotificationService {
 
     private final NotificationRepository notificationRepository;
+    private final RefereeRepository refereeRepository;
 
-    public NotificationService(NotificationRepository notificationRepository) {
+    public NotificationService(NotificationRepository notificationRepository, 
+                             RefereeRepository refereeRepository) {
         this.notificationRepository = notificationRepository;
+        this.refereeRepository = refereeRepository;
     }
 
     @Transactional
@@ -52,16 +56,99 @@ public class NotificationService {
         notificationRepository.save(notification);
     }
 
+    /**
+     * Crear notificación cuando se crea un nuevo torneo
+     */
+    @Transactional
+    public void createTournamentCreatedNotification(Tournament tournament) {
+        String title = "Nuevo Torneo Creado";
+        String message = String.format(
+            "Se ha creado un nuevo torneo: %s. Mantente atento para posibles asignaciones.",
+            tournament.getName()
+        );
+
+        // Obtener todos los referees activos
+        List<Referee> allReferees = refereeRepository.findAll();
+        
+        // Crear notificación para cada referee
+        for (Referee referee : allReferees) {
+            Notification notification = new Notification(
+                referee, 
+                title, 
+                message, 
+                NotificationType.SYSTEM
+            );
+            notificationRepository.save(notification);
+        }
+    }
+
+    /**
+     * Crear notificación cuando un referee es asignado a un torneo
+     */
+    @Transactional
+    public void createTournamentAssignmentNotification(Referee referee, Tournament tournament) {
+        String title = "Asignado a Torneo";
+        String message = String.format(
+            "Has sido asignado al torneo: %s. Ya puedes recibir asignaciones de partidos para este torneo.",
+            tournament.getName()
+        );
+
+        Notification notification = new Notification(
+            referee, 
+            title, 
+            message, 
+            NotificationType.ASSIGNMENT
+        );
+
+        notificationRepository.save(notification);
+    }
+
+    /**
+     * Crear notificación cuando un referee es removido de un torneo
+     */
+    @Transactional
+    public void createTournamentRemovalNotification(Referee referee, Tournament tournament) {
+        String title = "Removido del Torneo";
+        String message = String.format(
+            "Has sido removido del torneo: %s. Ya no recibirás asignaciones para este torneo.",
+            tournament.getName()
+        );
+
+        Notification notification = new Notification(
+            referee, 
+            title, 
+            message, 
+            NotificationType.SYSTEM
+        );
+
+        notificationRepository.save(notification);
+    }
+
+    /**
+     * Crear notificación general para un referee específico
+     */
     @Transactional
     public void createNotification(Referee referee, String title, String message, NotificationType type) {
         Notification notification = new Notification(referee, title, message, type);
         notificationRepository.save(notification);
     }
 
+    /**
+     * Crear notificación masiva para todos los referees
+     */
+    @Transactional
+    public void createBulkNotification(String title, String message, NotificationType type) {
+        List<Referee> allReferees = refereeRepository.findAll();
+        
+        for (Referee referee : allReferees) {
+            Notification notification = new Notification(referee, title, message, type);
+            notificationRepository.save(notification);
+        }
+    }
+
     public List<Notification> getNotificationsByReferee(Long refereeId) {
         return notificationRepository.findByReferee_IdOrderByCreatedAtDesc(refereeId);
     }
-
 
     public List<Notification> getUnreadNotificationsByReferee(Long refereeId) {
         return notificationRepository.findByReferee_IdAndIsReadFalseOrderByCreatedAtDesc(refereeId);
@@ -71,12 +158,10 @@ public class NotificationService {
         return notificationRepository.countByReferee_IdAndIsReadFalse(refereeId);
     }
 
-
     @Transactional
     public void markAsRead(Long notificationId) {
         notificationRepository.markAsRead(notificationId);
     }
-
 
     @Transactional
     public void markAllAsRead(Long refereeId) {

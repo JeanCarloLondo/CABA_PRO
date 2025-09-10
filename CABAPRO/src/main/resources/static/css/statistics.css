@@ -1,0 +1,71 @@
+body {
+  background-color: #fff;
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+}
+
+h1 {
+  font-weight: 700;
+  color: #212529;
+}
+
+.navbar {
+  background-color: #1e2d1b !important; /* verde oscuro estilo dashboard */
+}
+
+.kpi-card {
+  border: 1px solid #e9ecef;
+  border-radius: 14px;
+  padding: 18px;
+  box-shadow: 0 6px 22px rgba(0,0,0,.06);
+  background-color: #ffffff;
+  transition: transform 0.2s ease-in-out;
+}
+
+.kpi-card:hover {
+  transform: translateY(-3px);
+}
+
+.kpi-value {
+  font-size: 2rem;
+  font-weight: 700;
+  color: #1e2d1b; /* verde oscuro */
+}
+
+.kpi-sub {
+  color: #6c757d;
+  font-size: 0.95rem;
+}
+
+.section-title {
+  font-weight: 700;
+  margin-bottom: .75rem;
+  color: #1e2d1b;
+}
+
+.table-dashboard thead {
+  background-color: #1e2d1b;
+  color: #fff;
+}
+
+.table-dashboard tbody tr:nth-child(even) {
+  background-color: #eaf3ea; /* verde claro */
+}
+
+.table-dashboard tbody tr:hover {
+  background-color: #d2e6d2;
+}
+
+.btn-back {
+  background-color: #ff7b00;
+  color: #fff;
+  border: none;
+  font-weight: 500;
+  padding: 8px 16px;
+  border-radius: 8px;
+  transition: background-color 0.2s ease-in-out;
+}
+
+.btn-back:hover {
+  background-color: #e56d00;
+  color: #fff;
+}

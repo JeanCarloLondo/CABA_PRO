@@ -13,6 +13,7 @@
     <div class="collapse navbar-collapse">
       <ul class="navbar-nav me-auto mb-2 mb-lg-0">
         <li class="nav-item"><a class="nav-link active" th:href="@{/admin/dashboard}">Home</a></li>
+        <li class="nav-item"><a class="nav-link active" th:href="@{/admin/statistics}">Statistics</a></li>
       </ul>
     </div>
   </div>
@@ -59,16 +60,6 @@
         <h3 class="card-title">Matches</h3>
         <p class="card-text">Create, assign referees, edit and delete matches.</p>
         <a th:href="@{/admin/matches}" class="btn-custom">Go to Matches</a>
-      </div>
-    </div>
-
-    <!-- Statistics -->
-    <div class="col-md-5">
-      <div class="card card-tile text-center">
-        <img th:src="@{/images/statistics.png}" alt="Statistics" class="card-img mx-auto d-block">
-        <h3 class="card-title">Statistics</h3>
-        <p class="card-text">KPIs, top referees, and active tournaments.</p>
-        <a th:href="@{/admin/statistics}" class="btn-custom">View Statistics</a>
       </div>
     </div>
 

@@ -1,5 +1,5 @@
 body {
-  background-color: #0b3d0b; 
+  background-color: #8a4b10bb; 
   color: white;
 }
 
@@ -11,7 +11,7 @@ h1 {
 }
 
 .card-tile {
-  background-color: #2e8b57; 
+  background-color: #ddae77; 
   box-shadow: 0 10px 35px rgba(0,0,0,.2);
   border-radius: 20px;
   padding: 20px;
@@ -47,7 +47,7 @@ h1 {
 }
 
 .btn-custom {
-  background-color: #e4944fcc; 
+  background-color: #e27414cc; 
   color: white;
   border: none;
   font-weight: bold;

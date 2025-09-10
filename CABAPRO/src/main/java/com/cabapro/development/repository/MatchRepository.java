@@ -8,11 +8,8 @@ import java.time.LocalDateTime;
 
 @Repository
 public interface MatchRepository extends JpaRepository<Match, Long> {
+    long countByMatchDateAfter(LocalDateTime now);   
+    long countByMatchDateBefore(LocalDateTime now);  
 
-    // Para métricas "scheduled vs completed"
-    long countByMatchDateAfter(LocalDateTime now);   // scheduled (futuros)
-    long countByMatchDateBefore(LocalDateTime now);  // completed (pasados)
-
-    // Útil para rangos (por ejemplo, mes actual)
     long countByMatchDateBetween(LocalDateTime start, LocalDateTime end);
 }

@@ -1,126 +1,295 @@
 <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org">
+
 <head>
     <meta charset="UTF-8">
     <title>Referee Dashboard</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
-    <link rel="stylesheet" th:href="@{/css/referee-dashboard.css}">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <style>
+        .notification-badge {
+            position: relative;
+        }
+        .notification-badge .badge {
+            position: absolute;
+            top: -8px;
+            right: -8px;
+            background-color: #dc3545;
+            color: white;
+            font-size: 0.75rem;
+            border-radius: 50%;
+            padding: 4px 6px;
+        }
+        .notification-item {
+            border-bottom: 1px solid #e9ecef;
+            padding: 10px 0;
+        }
+        .notification-item:last-child {
+            border-bottom: none;
+        }
+        .notification-unread {
+            background-color: #f8f9fa;
+            font-weight: bold;
+        }
+        .notification-title {
+            font-weight: 600;
+            color: #495057;
+        }
+        .notification-message {
+            color: #6c757d;
+            font-size: 0.9rem;
+            margin-top: 4px;
+        }
+        .notification-time {
+            color: #adb5bd;
+            font-size: 0.8rem;
+            margin-top: 4px;
+        }
+        #notificationDropdown {
+            min-width: 350px;
+            max-height: 400px;
+            overflow-y: auto;
+        }
+    </style>
 </head>
 
-<body>
-    <div class="container mt-5">
-        <div class="d-flex justify-content-between align-items-center mb-4">
-            <h1 class="dashboard-title">Referee Dashboard</h1>
-            <div class="notifications">
-                <i id="notification-bell" class="fas fa-bell notification-bell"></i>
-                <span id="notification-count" class="notification-count">0</span>
-                <div id="notification-panel" class="notification-panel list-group">
-                    <!-- Notifications will be inserted here -->
+<body class="container mt-5">
+
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <h1>Referee Dashboard</h1>
+        
+        <!-- Botón de Notificaciones -->
+        <div class="dropdown">
+            <button class="btn btn-outline-primary notification-badge" type="button" id="notificationsDropdown" 
+                    data-bs-toggle="dropdown" aria-expanded="false">
+                <i class="fas fa-bell"></i> Notifications
+                <span class="badge" th:if="${unreadCount > 0}" th:text="${unreadCount}"></span>
+            </button>
+            
+            <div class="dropdown-menu dropdown-menu-end p-0" id="notificationDropdown" aria-labelledby="notificationsDropdown">
+                <div class="d-flex justify-content-between align-items-center p-3 border-bottom">
+                    <h6 class="mb-0">Notifications</h6>
+                    <button type="button" class="btn btn-link btn-sm p-0 text-decoration-none" 
+                            onclick="markAllAsRead()" th:if="${unreadCount > 0}">
+                        Mark all as read
+                    </button>
                 </div>
-            </div>
-        </div>
-
-        <!-- Profile -->
-        <div class="card mb-4 shadow-lg">
-            <div class="card-header bg-dark-green text-white">
-                My Profile
-            </div>
-            <div class="card-body bg-light-green text-white">
-                <form th:action="@{/referee/dashboard/{id}/update(id=${referee.id})}" method="post">
-                    <div class="mb-3">
-                        <label for="email" class="form-label">Email</label>
-                        <input type="email" id="email" name="email" class="form-control"
-                               th:value="${referee.email}" required>
+                
+                <div class="px-3 py-2" style="max-height: 300px; overflow-y: auto;">
+                    <!-- Lista de notificaciones -->
+                    <div th:if="${notifications.empty}" class="text-center text-muted py-3">
+                        <i class="fas fa-inbox fa-2x mb-2"></i>
+                        <p>No notifications yet</p>
                     </div>
-                    <div class="mb-3">
-                        <label for="phoneNumber" class="form-label">Phone Number</label>
-                        <input type="text" id="phoneNumber" name="phoneNumber" class="form-control"
-                               th:value="${referee.phoneNumber}" required>
+                    
+                    <div th:each="notification : ${notifications}" 
+                         class="notification-item" 
+                         th:classappend="${!notification.isRead} ? 'notification-unread' : ''"
+                         th:onclick="'markAsRead(' + ${notification.id} + ')'">
+                         
+                        <div class="notification-title" th:text="${notification.title}"></div>
+                        <div class="notification-message" th:text="${notification.message}"></div>
+                        <div class="notification-time" 
+                             th:text="${#temporals.format(notification.createdAt, 'dd/MM/yyyy HH:mm')}"></div>
+                             
+                        <div th:if="${!notification.isRead}" class="mt-1">
+                            <span class="badge bg-primary">New</span>
+                        </div>
                     </div>
-                    <div class="mb-3">
-                        <p><strong>Ranking:</strong> <span th:text="${referee.ranking.name}"></span></p>
-                        <p><strong>Specialty:</strong> <span th:text="${referee.specialty.name}"></span></p>
-                    </div>
-                    <button type="submit" class="btn-custom-green w-100">Update Profile</button>
-                </form>
-            </div>
-        </div>
-
-        <!-- Assignments -->
-        <div class="card shadow-lg">
-            <div class="card-header bg-dark-green text-white">
-                My Assignments
-            </div>
-            <div class="card-body bg-light-green text-white">
-                <table class="table table-striped table-dark">
-                    <thead>
-                        <tr>
-                            <th>Match</th>
-                            <th>Date</th>
-                            <th>Location</th>
-                            <th>Status</th>
-                            <th>Actions</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        <tr th:each="a : ${assignments}">
-                            <td th:text="${a.match.homeTeam + ' vs ' + a.match.awayTeam}"></td>
-                            <td th:text="${#temporals.format(a.match.matchDate, 'yyyy-MM-dd HH:mm')}"></td>
-                            <td th:text="${a.match.location}"></td>
-                            <td th:text="${a.status}"></td>
-                            <td>
-                                <form th:if="${a.status.name() == 'PENDING'}"
-                                      th:action="@{/referee/dashboard/{refId}/assignments/{aId}/accept(refId=${referee.id}, aId=${a.id})}"
-                                      method="post" style="display:inline;">
-                                    <button type="submit" class="btn-custom-green btn-sm">Accept</button>
-                                </form>
-                                <form th:if="${a.status.name() == 'PENDING'}"
-                                      th:action="@{/referee/dashboard/{refId}/assignments/{aId}/reject(refId=${referee.id}, aId=${a.id})}"
-                                      method="post" style="display:inline;">
-                                    <button type="submit" class="btn-custom-red btn-sm">Reject</button>
-                                </form>
-                            </td>
-                        </tr>
-                    </tbody>
-                </table>
+                </div>
+                
+                <div class="border-top p-2 text-center" th:if="${!notifications.empty}">
+                    <small class="text-muted">
+                        Showing <span th:text="${notifications.size()}"></span> notifications
+                    </small>
+                </div>
             </div>
         </div>
     </div>
 
-    <script th:inline="javascript">
-        document.addEventListener('DOMContentLoaded', function () {
-            const refereeId = /*[[${referee.id}]]*/ '0';
-            const bell = document.getElementById('notification-bell');
-            const countBadge = document.getElementById('notification-count');
-            const panel = document.getElementById('notification-panel');
-            let notificationCount = 0;
+    <!-- Perfil del árbitro -->
+    <div class="card mb-4">
+        <div class="card-header bg-primary text-white">
+            <i class="fas fa-user"></i> My Profile
+        </div>
+        <div class="card-body">
+            <form th:action="@{/referee/dashboard/{id}/update(id=${referee.id})}" method="post">
+                <div class="mb-3">
+                    <label for="email" class="form-label">Email</label>
+                    <input type="email" id="email" name="email" class="form-control" th:value="${referee.email}"
+                        required>
+                </div>
+                <div class="mb-3">
+                    <label for="phoneNumber" class="form-label">Phone Number</label>
+                    <input type="text" id="phoneNumber" name="phoneNumber" class="form-control"
+                        th:value="${referee.phoneNumber}" required>
+                </div>
+                <div class="mb-3">
+                    <p><strong>Ranking:</strong> <span th:text="${referee.ranking.name}"></span></p>
+                    <p><strong>Specialty:</strong> <span th:text="${referee.specialty?.name ?: 'No specialty assigned'}"></span></p>
+                </div>
+                <button type="submit" class="btn btn-success">
+                    <i class="fas fa-save"></i> Update Profile
+                </button>
+            </form>
+        </div>
+    </div>
 
-            bell.addEventListener('click', function() {
-                panel.style.display = panel.style.display === 'block' ? 'none' : 'block';
-                if (panel.style.display === 'block') {
-                    notificationCount = 0;
-                    countBadge.textContent = '0';
-                    countBadge.style.display = 'none';
+    <!-- Asignaciones -->
+    <div class="card">
+        <div class="card-header bg-secondary text-white">
+            <i class="fas fa-calendar-alt"></i> My Assignments
+        </div>
+        <div class="card-body">
+            <div th:if="${assignments.empty}" class="text-center text-muted py-4">
+                <i class="fas fa-calendar-times fa-3x mb-3"></i>
+                <p>No assignments yet. You will be notified when new matches are assigned to you.</p>
+            </div>
+            
+            <table class="table table-striped" th:if="${!assignments.empty}">
+                <thead>
+                    <tr>
+                        <th><i class="fas fa-futbol"></i> Match</th>
+                        <th><i class="fas fa-clock"></i> Date</th>
+                        <th><i class="fas fa-map-marker-alt"></i> Location</th>
+                        <th><i class="fas fa-info-circle"></i> Status</th>
+                        <th><i class="fas fa-cog"></i> Actions</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr th:each="a : ${assignments}">
+                        <td>
+                            <span th:if="${a.match.homeTeam != null and a.match.awayTeam != null}" 
+                                  th:text="${a.match.homeTeam + ' vs ' + a.match.awayTeam}"></span>
+                            <span th:unless="${a.match.homeTeam != null and a.match.awayTeam != null}"
+                                  th:text="'Match at ' + ${a.match.location}"></span>
+                        </td>
+                        <td th:text="${#temporals.format(a.match.matchDate, 'dd/MM/yyyy HH:mm')}"></td>
+                        <td th:text="${a.match.location}"></td>
+                        <td>
+                            <span class="badge" 
+                                  th:classappend="${a.status.name() == 'PENDING'} ? 'bg-warning text-dark' : 
+                                                  (${a.status.name() == 'ACCEPTED'} ? 'bg-success' : 'bg-danger')"
+                                  th:text="${a.status}"></span>
+                        </td>
+                        <td>
+                            <!-- Botones de acción solo si está pendiente -->
+                            <div th:if="${a.status.name() == 'PENDING'}" class="btn-group" role="group">
+                                <form th:action="@{/referee/dashboard/{refId}/assignments/{aId}/accept(refId=${referee.id}, aId=${a.id})}"
+                                      method="post" style="display:inline;">
+                                    <button type="submit" class="btn btn-success btn-sm">
+                                        <i class="fas fa-check"></i> Accept
+                                    </button>
+                                </form>
+                                <form th:action="@{/referee/dashboard/{refId}/assignments/{aId}/reject(refId=${referee.id}, aId=${a.id})}"
+                                      method="post" style="display:inline;">
+                                    <button type="submit" class="btn btn-danger btn-sm">
+                                        <i class="fas fa-times"></i> Reject
+                                    </button>
+                                </form>
+                            </div>
+                            <span th:unless="${a.status.name() == 'PENDING'}" class="text-muted">
+                                <i class="fas fa-check-circle"></i> Completed
+                            </span>
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+    <!-- Scripts -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script>
+        
+        function markAsRead(notificationId) {
+            fetch(`/referee/notifications/${notificationId}/read`, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
                 }
+            })
+            .then(response => response.json())
+            .then(data => {
+                if (data.status === 'success') {
+                    
+                    location.reload();
+                }
+            })
+            .catch(error => {
+                console.error('Error:', error);
             });
+        }
 
-            const eventSource = new EventSource(`/notifications/subscribe/${refereeId}`);
-            eventSource.addEventListener('new_match', function(event) {
-                const message = event.data;
-                const notificationItem = document.createElement('a');
-                notificationItem.href = '#';
-                notificationItem.classList.add('list-group-item', 'list-group-item-action');
-                notificationItem.textContent = message;
-                panel.insertBefore(notificationItem, panel.firstChild);
-                notificationCount++;
-                countBadge.textContent = notificationCount;
-                countBadge.style.display = 'block';
+        function markAllAsRead() {
+            const refereeId = /*[[${referee.id}]]*/ '0';
+            
+            fetch(`/referee/${refereeId}/notifications/read-all`, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                }
+            })
+            .then(response => response.json())
+            .then(data => {
+                if (data.status === 'success') {
+                    
+                    location.reload();
+                }
+            })
+            .catch(error => {
+                console.error('Error:', error);
             });
-            eventSource.onerror = function() {
-                console.error('SSE connection failed. Retrying...');
-            };
+        }
+
+        
+        setInterval(function() {
+            const refereeId = /*[[${referee.id}]]*/ '0';
+            
+            fetch(`/referee/${refereeId}/notifications`)
+                .then(response => response.json())
+                .then(data => {
+                    updateNotificationBadge(data.unreadCount);
+                })
+                .catch(error => {
+                    console.error('Error refreshing notifications:', error);
+                });
+        }, 30000); 
+
+        function updateNotificationBadge(unreadCount) {
+            const badge = document.querySelector('.notification-badge .badge');
+            if (unreadCount > 0) {
+                if (badge) {
+                    badge.textContent = unreadCount;
+                } else {
+                    
+                    const button = document.querySelector('.notification-badge');
+                    const newBadge = document.createElement('span');
+                    newBadge.className = 'badge';
+                    newBadge.textContent = unreadCount;
+                    button.appendChild(newBadge);
+                }
+            } else {
+                if (badge) {
+                    badge.remove();
+                }
+            }
+        }
+
+        
+        document.addEventListener('click', function(e) {
+            if (e.target.closest('.notification-item')) {
+                
+                setTimeout(() => {
+                    const dropdown = bootstrap.Dropdown.getInstance(document.getElementById('notificationsDropdown'));
+                    if (dropdown) {
+                        dropdown.hide();
+                    }
+                }, 100);
+            }
         });
     </script>
+
 </body>
+
 </html>

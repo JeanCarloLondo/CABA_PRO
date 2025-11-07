@@ -4,9 +4,11 @@ import com.cabapro.development.model.*;
 import com.cabapro.development.repository.*;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.thymeleaf.context.Context;
 
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.List;
 
 @Service
@@ -17,17 +19,20 @@ public class MatchService {
     private final AssignmentRepository assignmentRepo;
     private final RefereeRepository refereeRepo;
     private final NotificationService notificationService;
+    private final EmailService emailService;
 
     public MatchService(MatchRepository matchRepo,
                         TournamentRepository tournamentRepo,
                         AssignmentRepository assignmentRepo,
                         RefereeRepository refereeRepo,
-                        NotificationService notificationService) {
+                        NotificationService notificationService,
+                        EmailService emailService) {
         this.matchRepo = matchRepo;
         this.tournamentRepo = tournamentRepo;
         this.assignmentRepo = assignmentRepo;
         this.refereeRepo = refereeRepo;
         this.notificationService = notificationService;
+        this.emailService = emailService;
     }
 
     // ---- CRUD matches ----
@@ -123,7 +128,30 @@ public class MatchService {
 
         assignmentRepo.save(a);
 
+        // Notificatión in the app
         notificationService.createAssignmentNotification(ref, match);
+
+        // *** Ibeginin: sent emails after a new assigmet***
+        try {
+            Context context = new Context();
+            // Usamos el email como nombre de reemplazo ya que no hay un campo de nombre
+            context.setVariable("refereeName", ref.getEmail());
+            context.setVariable("tournamentName", match.getTournament().getName());
+            context.setVariable("matchDate", match.getMatchDate().format(DateTimeFormatter.ofPattern("dd/MM/yyyy")));
+            context.setVariable("matchTime", match.getMatchDate().format(DateTimeFormatter.ofPattern("HH:mm")));
+            context.setVariable("matchLocation", match.getLocation());
+
+            emailService.sendTemplatedEmail(
+                ref.getEmail(),
+                "Notificación: Nueva Asignación de Partido",
+                "emails/assignment-notification",
+                context
+            );
+        } catch (Exception e) {
+            // Log el error para no detener el flujo principal de la asignación
+            System.err.println("Failed to send assignment email notification to " + ref.getEmail() + ": " + e.getMessage());
+        }
+        // *** FIN: Integración de notificación por correo electrónico ***
     }
 
     @Transactional

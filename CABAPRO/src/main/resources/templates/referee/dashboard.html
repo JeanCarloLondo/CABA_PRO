@@ -23,11 +23,6 @@
         .notification-item {
             border-bottom: 1px solid #e9ecef;
             padding: 10px 0;
-            cursor: pointer;
-            transition: background-color 0.2s;
-        }
-        .notification-item:hover {
-            background-color: #f8f9fa;
         }
         .notification-item:last-child {
             border-bottom: none;
@@ -35,61 +30,25 @@
         .notification-unread {
             background-color: #f8f9fa;
             font-weight: bold;
-            border-left: 4px solid #007bff;
         }
         .notification-title {
             font-weight: 600;
             color: #495057;
-            display: flex;
-            align-items: center;
-            gap: 8px;
         }
         .notification-message {
             color: #6c757d;
             font-size: 0.9rem;
             margin-top: 4px;
-            line-height: 1.4;
         }
         .notification-time {
             color: #adb5bd;
             font-size: 0.8rem;
             margin-top: 4px;
         }
-        .notification-type-icon {
-            font-size: 0.9rem;
-            width: 20px;
-            text-align: center;
-        }
-        .notification-type-assignment { color: #28a745; }
-        .notification-type-tournament_created { color: #17a2b8; }
-        .notification-type-tournament_assignment { color: #ffc107; }
-        .notification-type-tournament_removal { color: #dc3545; }
-        .notification-type-tournament_update { color: #6f42c1; }
-        .notification-type-system { color: #6c757d; }
-        .notification-type-reminder { color: #fd7e14; }
-        .notification-type-match_update { color: #20c997; }
-        
         #notificationDropdown {
-            min-width: 400px;
-            max-height: 500px;
+            min-width: 350px;
+            max-height: 400px;
             overflow-y: auto;
-        }
-        
-        .notification-empty {
-            text-align: center;
-            padding: 2rem;
-            color: #6c757d;
-        }
-        
-        .notification-stats {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            padding: 0.5rem 1rem;
-            background-color: #f8f9fa;
-            border-top: 1px solid #dee2e6;
-            font-size: 0.8rem;
-            color: #6c757d;
         }
     </style>
 </head>
@@ -109,22 +68,18 @@
             
             <div class="dropdown-menu dropdown-menu-end p-0" id="notificationDropdown" aria-labelledby="notificationsDropdown">
                 <div class="d-flex justify-content-between align-items-center p-3 border-bottom">
-                    <h6 class="mb-0">
-                        <i class="fas fa-bell me-2"></i>Notifications
-                        <span class="badge bg-primary ms-2" th:if="${unreadCount > 0}" th:text="${unreadCount + ' new'}"></span>
-                    </h6>
+                    <h6 class="mb-0">Notifications</h6>
                     <button type="button" class="btn btn-link btn-sm p-0 text-decoration-none" 
                             onclick="markAllAsRead()" th:if="${unreadCount > 0}">
-                        <i class="fas fa-check-double"></i> Mark all as read
+                        Mark all as read
                     </button>
                 </div>
                 
-                <div class="px-3 py-2" style="max-height: 350px; overflow-y: auto;">
+                <div class="px-3 py-2" style="max-height: 300px; overflow-y: auto;">
                     <!-- Lista de notificaciones -->
-                    <div th:if="${notifications.empty}" class="notification-empty">
+                    <div th:if="${notifications.empty}" class="text-center text-muted py-3">
                         <i class="fas fa-inbox fa-2x mb-2"></i>
-                        <p class="mb-0">No notifications yet</p>
-                        <small class="text-muted">You'll receive notifications about tournaments, assignments, and updates here.</small>
+                        <p>No notifications yet</p>
                     </div>
                     
                     <div th:each="notification : ${notifications}" 
@@ -132,60 +87,21 @@
                          th:classappend="${!notification.isRead} ? 'notification-unread' : ''"
                          th:onclick="'markAsRead(' + ${notification.id} + ')'">
                          
-                        <div class="notification-title">
-                            <!-- Iconos según el tipo de notificación -->
-                            <i class="fas fa-futbol notification-type-icon notification-type-assignment" 
-                               th:if="${notification.type.name() == 'ASSIGNMENT'}"></i>
-                            <i class="fas fa-trophy notification-type-icon notification-type-tournament_created" 
-                               th:if="${notification.type.name() == 'TOURNAMENT_CREATED'}"></i>
-                            <i class="fas fa-user-plus notification-type-icon notification-type-tournament_assignment" 
-                               th:if="${notification.type.name() == 'TOURNAMENT_ASSIGNMENT'}"></i>
-                            <i class="fas fa-user-minus notification-type-icon notification-type-tournament_removal" 
-                               th:if="${notification.type.name() == 'TOURNAMENT_REMOVAL'}"></i>
-                            <i class="fas fa-edit notification-type-icon notification-type-tournament_update" 
-                               th:if="${notification.type.name() == 'TOURNAMENT_UPDATE'}"></i>
-                            <i class="fas fa-cog notification-type-icon notification-type-system" 
-                               th:if="${notification.type.name() == 'SYSTEM'}"></i>
-                            <i class="fas fa-bell notification-type-icon notification-type-reminder" 
-                               th:if="${notification.type.name() == 'REMINDER'}"></i>
-                            <i class="fas fa-sync notification-type-icon notification-type-match_update" 
-                               th:if="${notification.type.name() == 'MATCH_UPDATE'}"></i>
-                            
-                            <span th:text="${notification.title}"></span>
-                        </div>
-                        
+                        <div class="notification-title" th:text="${notification.title}"></div>
                         <div class="notification-message" th:text="${notification.message}"></div>
-                        
-                        <div class="d-flex justify-content-between align-items-center mt-2">
-                            <div class="notification-time" 
-                                 th:text="${#temporals.format(notification.createdAt, 'dd/MM/yyyy HH:mm')}"></div>
-                                 
-                            <div class="d-flex align-items-center gap-2">
-                                <!-- Badge del tipo de notificación -->
-                                <span class="badge bg-secondary" 
-                                      th:text="${notification.type.displayName}"
-                                      th:classappend="${notification.type.name() == 'TOURNAMENT_CREATED'} ? 'bg-info' : 
-                                                      (${notification.type.name() == 'TOURNAMENT_ASSIGNMENT'} ? 'bg-warning text-dark' : 
-                                                      (${notification.type.name() == 'TOURNAMENT_REMOVAL'} ? 'bg-danger' :
-                                                      (${notification.type.name() == 'ASSIGNMENT'} ? 'bg-success' : 'bg-secondary')))">
-                                </span>
-                                
-                                <!-- Indicador de no leída -->
-                                <span class="badge bg-primary" th:if="${!notification.isRead}">New</span>
-                            </div>
+                        <div class="notification-time" 
+                             th:text="${#temporals.format(notification.createdAt, 'dd/MM/yyyy HH:mm')}"></div>
+                             
+                        <div th:if="${!notification.isRead}" class="mt-1">
+                            <span class="badge bg-primary">New</span>
                         </div>
                     </div>
                 </div>
                 
-                <div class="notification-stats" th:if="${!notifications.empty}">
-                    <span>
-                        <i class="fas fa-list"></i>
-                        Showing <strong th:text="${notifications.size()}"></strong> notifications
-                    </span>
-                    <span th:if="${unreadCount > 0}">
-                        <i class="fas fa-envelope"></i>
-                        <strong th:text="${unreadCount}"></strong> unread
-                    </span>
+                <div class="border-top p-2 text-center" th:if="${!notifications.empty}">
+                    <small class="text-muted">
+                        Showing <span th:text="${notifications.size()}"></span> notifications
+                    </small>
                 </div>
             </div>
         </div>
@@ -216,54 +132,6 @@
                     <i class="fas fa-save"></i> Update Profile
                 </button>
             </form>
-        </div>
-    </div>
-
-    <!-- Notificaciones recientes destacadas -->
-    <div class="card mb-4" th:if="${unreadCount > 0}">
-        <div class="card-header bg-info text-white">
-            <i class="fas fa-bell"></i> Recent Notifications
-            <span class="badge bg-light text-dark ms-2" th:text="${unreadCount}"></span>
-        </div>
-        <div class="card-body">
-            <div th:each="notification, stat : ${notifications}" 
-                 th:if="${!notification.isRead and stat.index < 3}"
-                 class="alert alert-light border-start border-4 mb-2"
-                 th:classappend="${notification.type.name() == 'TOURNAMENT_CREATED'} ? 'border-info' : 
-                                 (${notification.type.name() == 'TOURNAMENT_ASSIGNMENT'} ? 'border-warning' : 
-                                 (${notification.type.name() == 'ASSIGNMENT'} ? 'border-success' : 'border-secondary'))">
-                <div class="d-flex align-items-start">
-                    <i class="fas fa-trophy text-info me-2 mt-1" 
-                       th:if="${notification.type.name() == 'TOURNAMENT_CREATED'}"></i>
-                    <i class="fas fa-user-plus text-warning me-2 mt-1" 
-                       th:if="${notification.type.name() == 'TOURNAMENT_ASSIGNMENT'}"></i>
-                    <i class="fas fa-futbol text-success me-2 mt-1" 
-                       th:if="${notification.type.name() == 'ASSIGNMENT'}"></i>
-                    <i class="fas fa-cog text-secondary me-2 mt-1" 
-                       th:if="${notification.type.name() == 'SYSTEM'}"></i>
-                    
-                    <div class="flex-grow-1">
-                        <h6 class="alert-heading mb-1" th:text="${notification.title}"></h6>
-                        <p class="mb-1" th:text="${notification.message}"></p>
-                        <small class="text-muted" 
-                               th:text="${#temporals.format(notification.createdAt, 'dd/MM/yyyy HH:mm')}"></small>
-                    </div>
-                    
-                    <button type="button" class="btn btn-sm btn-outline-primary ms-2" 
-                            th:onclick="'markAsRead(' + ${notification.id} + ')'"
-                            title="Mark as read">
-                        <i class="fas fa-check"></i>
-                    </button>
-                </div>
-            </div>
-            
-            <div th:if="${unreadCount > 3}" class="text-center mt-3">
-                <button type="button" class="btn btn-outline-info btn-sm" 
-                        onclick="document.getElementById('notificationsDropdown').click()">
-                    <i class="fas fa-plus"></i> 
-                    View <span th:text="${unreadCount - 3}"></span> more notifications
-                </button>
-            </div>
         </div>
     </div>
 
@@ -344,6 +212,7 @@
             .then(response => response.json())
             .then(data => {
                 if (data.status === 'success') {
+                    
                     location.reload();
                 }
             })
@@ -364,6 +233,7 @@
             .then(response => response.json())
             .then(data => {
                 if (data.status === 'success') {
+                    
                     location.reload();
                 }
             })
@@ -372,7 +242,7 @@
             });
         }
 
-        // Auto-refresh notifications
+        
         setInterval(function() {
             const refereeId = /*[[${referee.id}]]*/ '0';
             
@@ -384,7 +254,7 @@
                 .catch(error => {
                     console.error('Error refreshing notifications:', error);
                 });
-        }, 30000); // Refresh every 30 seconds
+        }, 30000); 
 
         function updateNotificationBadge(unreadCount) {
             const badge = document.querySelector('.notification-badge .badge');
@@ -392,6 +262,7 @@
                 if (badge) {
                     badge.textContent = unreadCount;
                 } else {
+                    
                     const button = document.querySelector('.notification-badge');
                     const newBadge = document.createElement('span');
                     newBadge.className = 'badge';
@@ -405,9 +276,10 @@
             }
         }
 
-        // Close dropdown after marking notification as read
+        
         document.addEventListener('click', function(e) {
             if (e.target.closest('.notification-item')) {
+                
                 setTimeout(() => {
                     const dropdown = bootstrap.Dropdown.getInstance(document.getElementById('notificationsDropdown'));
                     if (dropdown) {
@@ -416,45 +288,6 @@
                 }, 100);
             }
         });
-
-        // Add sound notification for new notifications (optional)
-        let lastNotificationCount = /*[[${unreadCount}]]*/ 0;
-        
-        function checkForNewNotifications() {
-            const refereeId = /*[[${referee.id}]]*/ '0';
-            
-            fetch(`/referee/${refereeId}/notifications`)
-                .then(response => response.json())
-                .then(data => {
-                    if (data.unreadCount > lastNotificationCount) {
-                        // New notification received
-                        showNotificationToast();
-                    }
-                    lastNotificationCount = data.unreadCount;
-                    updateNotificationBadge(data.unreadCount);
-                })
-                .catch(error => {
-                    console.error('Error checking notifications:', error);
-                });
-        }
-
-        function showNotificationToast() {
-            // Simple toast notification
-            if (Notification.permission === 'granted') {
-                new Notification('CABAPRO', {
-                    body: 'You have new notifications!',
-                    icon: '/favicon.ico'
-                });
-            }
-        }
-
-        // Request notification permission
-        if ('Notification' in window) {
-            Notification.requestPermission();
-        }
-
-        // Check for new notifications every minute
-        setInterval(checkForNewNotifications, 60000);
     </script>
 
 </body>

@@ -46,9 +46,8 @@ public class TournamentController {
                          @RequestParam(required = false) String rounds,
                          RedirectAttributes ra) {
         try {
-            Tournament tournament = tournamentService.create(name, teams, rounds);
-            ra.addFlashAttribute("success", 
-                "Tournament created successfully. All referees have been notified.");
+            tournamentService.create(name, teams, rounds);
+            ra.addFlashAttribute("success", "Tournament created.");
             return "redirect:/admin/tournaments";
         } catch (IllegalArgumentException ex) {
             ra.addFlashAttribute("error", ex.getMessage());
@@ -71,7 +70,7 @@ public class TournamentController {
                          RedirectAttributes ra) {
         try {
             tournamentService.update(id, name, teams, rounds);
-            ra.addFlashAttribute("success", "Tournament updated successfully.");
+            ra.addFlashAttribute("success", "Tournament updated.");
         } catch (IllegalArgumentException ex) {
             ra.addFlashAttribute("error", ex.getMessage());
         }
@@ -83,8 +82,7 @@ public class TournamentController {
     public String delete(@PathVariable Long id, RedirectAttributes ra) {
         try {
             tournamentService.delete(id);
-            ra.addFlashAttribute("success", 
-                "Tournament deleted successfully. Assigned referees have been notified.");
+            ra.addFlashAttribute("success", "Tournament deleted.");
         } catch (IllegalArgumentException ex) {
             ra.addFlashAttribute("error", ex.getMessage());
         }
@@ -110,8 +108,7 @@ public class TournamentController {
                              RedirectAttributes ra) {
         try {
             tournamentService.addReferee(id, refereeId);
-            ra.addFlashAttribute("success", 
-                "Referee assigned successfully. They have been notified.");
+            ra.addFlashAttribute("success", "Referee assigned.");
         } catch (IllegalArgumentException ex) {
             ra.addFlashAttribute("error", ex.getMessage());
         }
@@ -122,37 +119,8 @@ public class TournamentController {
     public String removeReferee(@PathVariable Long id,
                                 @PathVariable("refId") Long refereeId,
                                 RedirectAttributes ra) {
-        try {
-            tournamentService.removeReferee(id, refereeId);
-            ra.addFlashAttribute("success", 
-                "Referee removed successfully. They have been notified.");
-        } catch (Exception ex) {
-            ra.addFlashAttribute("error", "Error removing referee: " + ex.getMessage());
-        }
-        return "redirect:/admin/tournaments/{id}/referees";
-    }
-
-    // NUEVO: Endpoint para enviar notificaciones manuales a los referees del torneo
-    @GetMapping("/{id}/notify")
-    public String notifyForm(@PathVariable Long id, Model model) {
-        Tournament tournament = tournamentService.findById(id);
-        model.addAttribute("tournament", tournament);
-        model.addAttribute("assignedCount", tournament.getReferees().size());
-        return "admin/tournaments/notify";
-    }
-
-    @PostMapping("/{id}/notify")
-    public String sendNotification(@PathVariable Long id,
-                                   @RequestParam String title,
-                                   @RequestParam String message,
-                                   RedirectAttributes ra) {
-        try {
-            tournamentService.notifyTournamentReferees(id, title, message);
-            ra.addFlashAttribute("success", 
-                "Notification sent to all assigned referees successfully.");
-        } catch (Exception ex) {
-            ra.addFlashAttribute("error", "Error sending notifications: " + ex.getMessage());
-        }
+        tournamentService.removeReferee(id, refereeId);
+        ra.addFlashAttribute("success", "Referee removed.");
         return "redirect:/admin/tournaments/{id}/referees";
     }
 }

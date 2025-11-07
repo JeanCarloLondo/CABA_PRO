@@ -1,5 +1,5 @@
 body {
-    background: url("../images/back.png") no-repeat center center fixed;
+    background: #211d1d;
     background-size: cover;
     display: flex;
     justify-content: center;
@@ -28,7 +28,7 @@ body {
 
 
 .btn-orange {
-    background-color: rgba(173, 5, 5, 0.748);
+    background-color: rgba(160, 101, 101, 0.748);
     color: white;
     font-weight: bold;
     border: none;
@@ -38,13 +38,13 @@ body {
 }
 
 .btn-orange:hover {
-    background-color: rgb(216, 137, 137);
+    background-color: rgba(66, 7, 7, 0.748);
     color: white;
 }
 
 .btn-outline-orange {
     color: rgb(247, 251, 249);
-    border: 2px solid rgb(34, 74, 53);
+    border: 2px solid rgb(76, 109, 92);
     font-weight: bold;
     border-radius: 8px;
     transition: all 0.3s ease;
@@ -52,7 +52,7 @@ body {
 }
 
 .btn-outline-orange:hover {
-    background-color: rgb(77, 160, 126);
+    background-color: rgb(76, 109, 92);
     color: white;
 }
 

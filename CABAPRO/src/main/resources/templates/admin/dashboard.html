@@ -7,23 +7,82 @@
   <link rel="stylesheet" th:href="@{/css/dashboard.css}">
 </head>
 <body>
-  <div class="sidebar">
-    <h2> CABA PRO </h2>
-    <ul>
-      <li><a th:href="@{/admin/dashboard}" class="active">Dashboard</a></li>
-      <li><a th:href="@{/admin/referees}">Referees</a></li>
-      <li><a th:href="@{/admin/rankings}">Rankings</a></li>
-      <li><a th:href="@{/admin/specialties}">Specialties</a></li>
-      <li><a th:href="@{/admin/matches}">Matches</a></li>
-      <li><a th:href="@{/admin/tournaments}">Tournaments</a></li>
-      <li><a th:href="@{/admin/liquidations}">Liquidations</a></li>
-      <li><a th:href="@{/logout}" >Log out</a></li>
-    </ul>
+<nav class="navbar navbar-expand-lg navbar-dark bg-dark">
+  <div class="container-fluid">
+    <a class="navbar-brand" href="#">Admin Dashboard</a>
+    <div class="collapse navbar-collapse">
+      <ul class="navbar-nav me-auto mb-2 mb-lg-0">
+        <li class="nav-item"><a class="nav-link active" th:href="@{/admin/dashboard}">Home</a></li>
+        <li class="nav-item"><a class="nav-link active" th:href="@{/admin/statistics}">Statistics</a></li>
+      </ul>
+    </div>
   </div>
+</nav>
 
-  <div class="main-content">
-    <h1>Administrator Dashboard</h1>
+<div class="container mt-4 justify-content-center">
+  <h1>Administrator Dashboard</h1>
 
+  <div class="row g-2 justify-content-center">
+    <!-- Referees -->
+    <div class="col-md-5">
+      <div class="card card-tile text-center">
+        <img th:src="@{/images/referees.png}" alt="Referees" class="card-img mx-auto d-block">
+        <h3 class="card-title"> Referees</h3>
+        <p class="card-text">Manage referees: view, search, add, edit and delete.</p>
+        <a th:href="@{/admin/referees}" class="btn-custom"> Go to Referees </a>
+      </div>
+    </div>
+
+    <!-- Rankings -->
+    <div class="col-md-5">
+      <div class="card card-tile text-center">
+        <img th:src="@{/images/rankings.png}" alt="Rankings" class="card-img mx-auto d-block">
+        <h3 class="card-title">Rankings</h3>
+        <p class="card-text">Manage referee rankings.</p>
+        <a th:href="@{/admin/rankings}" class="btn-custom">Go to Rankings</a>
+      </div>
+    </div>
+
+    <!-- Specialties -->
+    <div class="col-md-5">
+      <div class="card card-tile text-center">
+        <img th:src="@{/images/specialties.png}" alt="Specialties" class="card-img mx-auto d-block">
+        <h3 class="card-title">Specialties</h3>
+        <p class="card-text">Manage referee specialties.</p>
+        <a th:href="@{/admin/specialties}" class="btn-custom">Go to Specialties</a>
+      </div>
+    </div>
+
+    <!-- Matches -->
+    <div class="col-md-5">
+      <div class="card card-tile text-center">
+        <img th:src="@{/images/matches.png}" alt="Matches" class="card-img mx-auto d-block">
+        <h3 class="card-title">Matches</h3>
+        <p class="card-text">Create, assign referees, edit and delete matches.</p>
+        <a th:href="@{/admin/matches}" class="btn-custom">Go to Matches</a>
+      </div>
+    </div>
+
+    <!-- Tournaments -->
+    <div class="col-md-5">
+      <div class="card card-tile text-center">
+        <img th:src="@{/images/tournaments.png}" alt="Tournaments" class="card-img mx-auto d-block">
+        <h3 class="card-title">Tournaments</h3>
+        <p class="card-text">Create, edit, assign referees, and delete tournaments.</p>
+        <a th:href="@{/admin/tournaments}" class="btn-custom">Go to Tournaments</a>
+      </div>
+    </div>
+
+    <!-- Liquidations -->
+    <div class="col-md-5">
+      <div class="card card-tile text-center">
+        <img th:src="@{/images/liquidations.png}" alt="Liquidations" class="card-img mx-auto d-block">
+        <h3 class="card-title">Liquidations</h3>
+        <p class="card-text">Generate monthly payment PDFs for referees.</p>
+        <a th:href="@{/admin/liquidations}" class="btn-custom">Go to Liquidations</a>
+      </div>
+    </div>
   </div>
+</div>
 </body>
 </html>

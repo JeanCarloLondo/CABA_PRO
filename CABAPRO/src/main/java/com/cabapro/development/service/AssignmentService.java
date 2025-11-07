@@ -22,12 +22,10 @@ public class AssignmentService {
 
     private final AssignmentRepository assignmentRepository;
     private final RefereeRepository refereeRepository;
-    private final EmailService emailService;
 
-    public AssignmentService(AssignmentRepository assignmentRepository, RefereeRepository refereeRepository, EmailService emailService) {
+    public AssignmentService(AssignmentRepository assignmentRepository, RefereeRepository refereeRepository) {
         this.assignmentRepository = assignmentRepository;
         this.refereeRepository = refereeRepository;
-        this.emailService = emailService;
     }
 
     public List<Assignment> findAll() {

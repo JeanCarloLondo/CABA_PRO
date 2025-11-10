@@ -18,12 +18,16 @@ public class TournamentService {
     private final RefereeRepository refereeRepo;
     private final NotificationService notificationService;
 
+    private final EmailService emailService;
+
     public TournamentService(TournamentRepository tournamentRepo,
                              RefereeRepository refereeRepo,
-                             NotificationService notificationService) {
+                             NotificationService notificationService,
+                             EmailService emailService) {
         this.tournamentRepo = tournamentRepo;
         this.refereeRepo = refereeRepo;
         this.notificationService = notificationService;
+        this.emailService = emailService;
     }
 
     public List<Tournament> findAll() {
@@ -158,6 +162,18 @@ public class TournamentService {
             notificationService.createTournamentAssignmentNotification(r, t);
         } catch (Exception e) {
             System.err.println("Error creating referee assignment notification: " + e.getMessage());
+        }
+
+        // Enviar email de notificación
+        try {
+            emailService.sendTemplatedEmail(
+                r.getEmail(),
+                "Notificación: Nueva Asignación de Torneo",
+                "emails/tournament-assignment-notification",
+                new org.thymeleaf.context.Context()
+            );
+        } catch (Exception e) {
+            System.err.println("Failed to send tournament assignment email notification to " + r.getEmail() + ": " + e.getMessage());
         }
     }
 

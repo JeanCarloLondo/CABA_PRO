@@ -2,28 +2,36 @@
 <html xmlns:th="http://www.thymeleaf.org">
 <head>
   <meta charset="UTF-8">
-  <title>My Matches</title>
+  <title th:text="#{matches.title}">My Matches</title>
   <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
 </head>
 <body>
 <div class="container mt-4">
-  <h1>My Matches</h1>
+  <h1 th:text="#{matches.title}">My Matches</h1>
+
   <table class="table table-striped">
     <thead>
-    <tr>
-      <th>Date</th><th>Tournament</th><th>Location</th><th>Status</th>
-    </tr>
+      <tr>
+        <th th:text="#{matches.column.date}">Date</th>
+        <th th:text="#{matches.column.tournament}">Tournament</th>
+        <th th:text="#{matches.column.location}">Location</th>
+        <th th:text="#{matches.column.status}">Status</th>
+      </tr>
     </thead>
+
     <tbody>
-    <tr th:each="a : ${assignments}">
-      <td th:text="${#temporals.format(a.match.matchDate,'yyyy-MM-dd HH:mm')}">date</td>
-      <td th:text="${a.match.tournament.name}">tournament</td>
-      <td th:text="${a.match.location}">location</td>
-      <td th:text="${a.status}">PENDING</td>
-    </tr>
-    <tr th:if="${#lists.isEmpty(assignments)}">
-      <td colspan="4" class="text-center text-muted">No assignments yet.</td>
-    </tr>
+      <tr th:each="a : ${assignments}">
+        <td th:text="${#temporals.format(a.match.matchDate,'yyyy-MM-dd HH:mm')}"></td>
+        <td th:text="${a.match.tournament.name}"></td>
+        <td th:text="${a.match.location}"></td>
+        <td th:text="${a.status}"></td>
+      </tr>
+
+      <tr th:if="${#lists.isEmpty(assignments)}">
+        <td colspan="4" class="text-center text-muted" th:text="#{matches.empty}">
+          No assignments yet.
+        </td>
+      </tr>
     </tbody>
   </table>
 </div>

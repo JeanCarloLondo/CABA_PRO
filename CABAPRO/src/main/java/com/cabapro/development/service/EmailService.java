@@ -38,7 +38,7 @@ public class EmailService {
     }
 
     /**
-     * Sends a simple email with a raw HTML body.
+     * Sends a simple email with a HTML body.
      */
     public void sendEmail(String toEmail, String subject, String htmlBody) {
         HttpHeaders headers = new HttpHeaders();

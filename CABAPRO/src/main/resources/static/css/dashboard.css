@@ -1,6 +1,15 @@
 body {
+<<<<<<< Updated upstream
   background-color: #6f0f0fbb; 
   color: white;
+=======
+  margin: 0;
+  font-family: 'Segoe UI', Tahoma, Verdana, sans-serif;
+  color: #fff;
+  background: #211d1d;
+  display: flex;
+  min-height: 100vh;
+>>>>>>> Stashed changes
 }
 
 h1 {
@@ -60,4 +69,63 @@ h1 {
 .btn-custom:hover {
   background-color: #3f0707; 
   color: white;
+}
+
+/* ====== EXTRA BUTTONS (para páginas internas como referee) ====== */
+.btn-secondary {
+  background-color: #333;
+  color: #fff;
+  border: none;
+  border-radius: 6px;
+  padding: 0.6rem 1.2rem;
+  transition: all 0.3s ease;
+}
+
+.btn-secondary:hover {
+  background-color: #555;
+  transform: translateY(-2px);
+}
+
+.btn-primary {
+  background-color: rgba(160, 101, 101, 0.85);
+  border: none;
+  color: #fff;
+  font-weight: 600;
+  border-radius: 6px;
+  padding: 0.6rem 1.2rem;
+  transition: all 0.3s ease;
+}
+
+.btn-primary:hover {
+  background-color: rgba(66, 7, 7, 0.85);
+  transform: translateY(-2px);
+}
+
+.btn-success {
+  background-color: #2e7d32;
+  border: none;
+  color: #fff;
+  font-weight: 600;
+  border-radius: 6px;
+  padding: 0.6rem 1.2rem;
+  transition: all 0.3s ease;
+}
+
+.btn-success:hover {
+  background-color: #1b5e20;
+  transform: translateY(-2px);
+}
+
+.table {
+  background-color: #2a2a2a;
+  color: #fff;
+}
+
+.table-striped tbody tr:nth-of-type(odd) {
+  background-color: rgba(255, 255, 255, 0.05);
+}
+
+.table thead {
+  background-color: #121111;
+  color: #ddd;
 }

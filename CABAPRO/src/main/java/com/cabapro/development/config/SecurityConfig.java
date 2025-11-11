@@ -21,65 +21,69 @@ import org.springframework.security.web.SecurityFilterChain;
 @Configuration
 public class SecurityConfig {
 
-    private final CustomUserService customUserService;
+        private final CustomUserService customUserService;
 
-    public SecurityConfig(CustomUserService customUserService) {
-        this.customUserService = customUserService;
-    }
+        public SecurityConfig(CustomUserService customUserService) {
+                this.customUserService = customUserService;
+        }
 
-    @Bean
-    public PasswordEncoder passwordEncoder() {
-        return new BCryptPasswordEncoder();
-    }
+        @Bean
+        public PasswordEncoder passwordEncoder() {
+                return new BCryptPasswordEncoder();
+        }
 
-    @Bean
-    public AuthenticationManager authenticationManager(
-            HttpSecurity http,
-            PasswordEncoder passwordEncoder) throws Exception {
+        @Bean
+        public AuthenticationManager authenticationManager(
+                        HttpSecurity http,
+                        PasswordEncoder passwordEncoder) throws Exception {
 
-        return http.getSharedObject(AuthenticationManagerBuilder.class)
-                .userDetailsService(customUserService)
-                .passwordEncoder(passwordEncoder)
-                .and()
-                .build();
-    }
+                return http.getSharedObject(AuthenticationManagerBuilder.class)
+                                .userDetailsService(customUserService)
+                                .passwordEncoder(passwordEncoder)
+                                .and()
+                                .build();
+        }
 
-    @Bean
-    public SecurityFilterChain securityFilterChain(HttpSecurity http,
-                                                   CustomLoginSuccessHandler successHandler) throws Exception {
-        http
-                .authorizeHttpRequests(auth -> auth
-                        .requestMatchers(
-                                "/login",
-                                "/css/**", "/js/**", "/images/**",
-                                "/h2-console/**",
-                                "/register",
-                                "/admin/users/create"
-                        ).permitAll()
-                        .requestMatchers("/admin/**").hasRole("ADMIN")
-                        .requestMatchers("/referees/**").hasRole("REFEREE")
-                        .anyRequest().authenticated()
-                )
-                .formLogin(form -> form
-                        .loginPage("/login")
-                        .successHandler(successHandler)
-                        .permitAll()
-                )
-                .logout(logout -> logout
-                        .logoutUrl("/logout")
-                        .logoutSuccessUrl("/login?logout")
-                        .invalidateHttpSession(true)
-                        .clearAuthentication(true)
-                        .deleteCookies("JSESSIONID")
-                        .permitAll()
-                )
-                .sessionManagement(session -> session
-                        .maximumSessions(1)
-                        .expiredUrl("/login?expired")
-                )
-                .csrf(csrf -> csrf.disable())
-                .headers(headers -> headers.frameOptions(frame -> frame.sameOrigin()));
+        @Bean
+        public SecurityFilterChain securityFilterChain(HttpSecurity http,
+                        CustomLoginSuccessHandler successHandler) throws Exception {
+                http
+                                .csrf(csrf -> csrf.disable())
+                                .authorizeHttpRequests(auth -> auth
+                                                //  Permitir acceso libre a la API
+                                                .requestMatchers("/api/**").permitAll()
 
-        return http.build();
-    }
+                                                //  Rutas públicas
+                                                .requestMatchers(
+                                                                "/login",
+                                                                "/register",
+                                                                "/css/**", "/js/**", "/images/**",
+                                                                "/h2-console/**",
+                                                                "/admin/users/create")
+                                                .permitAll()
+
+                                                //  Rutas protegidas por rol
+                                                .requestMatchers("/admin/**").hasRole("ADMIN")
+                                                .requestMatchers("/referees/**").hasRole("REFEREE")
+
+                                                //  Todo lo demás requiere autenticación
+                                                .anyRequest().authenticated())
+                                .formLogin(form -> form
+                                                .loginPage("/login")
+                                                .successHandler(successHandler)
+                                                .permitAll())
+                                .logout(logout -> logout
+                                                .logoutUrl("/logout")
+                                                .logoutSuccessUrl("/login?logout")
+                                                .invalidateHttpSession(true)
+                                                .clearAuthentication(true)
+                                                .deleteCookies("JSESSIONID")
+                                                .permitAll())
+                                .sessionManagement(session -> session
+                                                .maximumSessions(1)
+                                                .expiredUrl("/login?expired"))
+                                .headers(headers -> headers.frameOptions(frame -> frame.sameOrigin()));
+
+                return http.build();
+        }
 }

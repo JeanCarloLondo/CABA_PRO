@@ -1,0 +1,18 @@
+services:
+  spring-api:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    ports:
+      - "8080:8080"
+    container_name: cabapro-spring-api
+
+  node-api:
+    build:
+      context: ./api-referees
+      dockerfile: src/Dockerfile
+    ports:
+      - "3000:3000"
+    container_name: cabapro-node-api
+    depends_on:
+      - spring-api

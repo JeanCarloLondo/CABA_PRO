@@ -25,6 +25,7 @@ jobs:
       - name: Build and push Docker image
         uses: docker/build-push-action@v6
         with:
-          context: .
+          context: ./CABAPRO
+          file: ./CABAPRO/Dockerfile
           push: true
           tags: ${{ secrets.DOCKERHUB_USERNAME }}/cabapro:latest

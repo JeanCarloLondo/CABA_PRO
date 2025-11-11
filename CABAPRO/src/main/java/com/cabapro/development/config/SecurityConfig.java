@@ -32,11 +32,11 @@ public class SecurityConfig {
         return new BCryptPasswordEncoder();
     }
 
-    // AuthenticationManager bean
     @Bean
     public AuthenticationManager authenticationManager(
             HttpSecurity http,
             PasswordEncoder passwordEncoder) throws Exception {
+
         return http.getSharedObject(AuthenticationManagerBuilder.class)
                 .userDetailsService(customUserService)
                 .passwordEncoder(passwordEncoder)
@@ -44,24 +44,39 @@ public class SecurityConfig {
                 .build();
     }
 
-    // Security rules
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http,
-            CustomLoginSuccessHandler successHandler) throws Exception {
+                                                   CustomLoginSuccessHandler successHandler) throws Exception {
         http
                 .authorizeHttpRequests(auth -> auth
-                        .requestMatchers("/login", "/css/**", "/js/**", "/images/**", "/h2-console/**", "/register", "/admin/users/create").permitAll()
+                        .requestMatchers(
+                                "/login",
+                                "/css/**", "/js/**", "/images/**",
+                                "/h2-console/**",
+                                "/register",
+                                "/admin/users/create"
+                        ).permitAll()
                         .requestMatchers("/admin/**").hasRole("ADMIN")
                         .requestMatchers("/referees/**").hasRole("REFEREE")
-                        .anyRequest().authenticated())
+                        .anyRequest().authenticated()
+                )
                 .formLogin(form -> form
                         .loginPage("/login")
-                        .successHandler(successHandler) //  redirect depends on role
-                        .permitAll())
+                        .successHandler(successHandler)
+                        .permitAll()
+                )
                 .logout(logout -> logout
                         .logoutUrl("/logout")
                         .logoutSuccessUrl("/login?logout")
-                        .permitAll())
+                        .invalidateHttpSession(true)
+                        .clearAuthentication(true)
+                        .deleteCookies("JSESSIONID")
+                        .permitAll()
+                )
+                .sessionManagement(session -> session
+                        .maximumSessions(1)
+                        .expiredUrl("/login?expired")
+                )
                 .csrf(csrf -> csrf.disable())
                 .headers(headers -> headers.frameOptions(frame -> frame.sameOrigin()));
 

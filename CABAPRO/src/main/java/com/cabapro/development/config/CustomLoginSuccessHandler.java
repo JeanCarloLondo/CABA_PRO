@@ -29,17 +29,25 @@ public class CustomLoginSuccessHandler implements AuthenticationSuccessHandler {
 
     @Override
     public void onAuthenticationSuccess(HttpServletRequest request,
-            HttpServletResponse response,
-            Authentication authentication)
+                                        HttpServletResponse response,
+                                        Authentication authentication)
             throws IOException, ServletException {
 
         var authorities = authentication.getAuthorities();
         String redirectUrl = "/";
 
+        // Sanitize and validate username/email
+        String rawEmail = authentication.getName();
+        if (rawEmail == null || rawEmail.trim().isEmpty() || rawEmail.contains(" ")) {
+            response.sendRedirect("/login?error=invalid_credentials");
+            return;
+        }
+
+        String email = rawEmail.trim().toLowerCase();
+
         if (authorities.stream().anyMatch(a -> a.getAuthority().equals("ROLE_ADMIN"))) {
             redirectUrl = "/admin/dashboard";
         } else if (authorities.stream().anyMatch(a -> a.getAuthority().equals("ROLE_REFEREE"))) {
-            String email = authentication.getName();
             var referee = refereeRepository.findByEmail(email)
                     .orElseThrow(() -> new IllegalStateException("Referee not found for email: " + email));
             redirectUrl = "/referee/dashboard/" + referee.getId();

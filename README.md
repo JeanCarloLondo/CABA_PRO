@@ -107,3 +107,5 @@ spring.h2.console.enabled=true
 - Smart Search — partial, case-insensitive search by email in referee lists.
 
 - Role-based Routing — post-login redirection based on user role, ensuring protected navigation.
+
+trigger!
